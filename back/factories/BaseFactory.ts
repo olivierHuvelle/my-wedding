@@ -1,5 +1,5 @@
 export abstract class BaseFactory<T> {
-  protected _uniqueConstraints: Record<string, never[]> = {}
+  protected _uniqueConstraints: Record<string, unknown[]> = {}
 
   constructor() {
     this._uniqueConstraints = {}
