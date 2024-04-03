@@ -1,4 +1,5 @@
 import { fakerFR_BE } from '@faker-js/faker'
+import { BaseFactory } from '../factories/BaseFactory'
 
 interface Contact {
   phone: string
@@ -12,10 +13,11 @@ interface Contact {
   remark: string
 }
 
-export class ContactFactory {
-  private _uniqueConstraints: { email: string[] }
+export class ContactFactory extends BaseFactory<Contact> {
+  protected _uniqueConstraints: { email: string[] }
 
   constructor() {
+    super()
     this._uniqueConstraints = {
       email: [],
     }
@@ -43,13 +45,5 @@ export class ContactFactory {
       city: fakerFR_BE.location.city(),
       remark: fakerFR_BE.lorem.text(),
     }
-  }
-
-  bulkCreate(nbRecords: number) {
-    const records = []
-    for (let i = 0; i < nbRecords; i++) {
-      records.push(this.create())
-    }
-    return records
   }
 }

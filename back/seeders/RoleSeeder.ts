@@ -7,11 +7,11 @@ export class RoleSeeder extends BaseSeeder {
   async seed() {
     console.log('starting seeding roles')
     await this._prisma.role.createMany({
-      data: [{ name: 'marié' }, { name: 'invité' }, { name: 'professionnel' }],
+      data: [{ name: 'Marié' }, { name: 'Invité' }, { name: 'Professionnel' }],
     })
 
     const guestRole = await this._prisma.role.findUnique({
-      where: { name: 'invité' },
+      where: { name: 'Invité' },
     })
 
     if (!guestRole) {
@@ -20,7 +20,7 @@ export class RoleSeeder extends BaseSeeder {
 
     await this._prisma.role.create({
       data: {
-        name: 'témoin',
+        name: 'Témoin',
         parentId: guestRole.id,
       },
     })

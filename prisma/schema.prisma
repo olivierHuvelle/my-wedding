@@ -85,7 +85,11 @@ model Contact {
 
 model Event {
   id         Int      @id @default(autoincrement())
-  name       String
+  name       String   @unique
+  zipCode    String
+  number     String
+  street     String
+  city       String
   startingAt DateTime
   endingAt   DateTime
   createdAt  DateTime @default(now())
