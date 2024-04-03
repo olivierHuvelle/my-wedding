@@ -10,7 +10,9 @@ export class UserSeeder extends BaseSeeder {
     console.log('starting seeding users')
     const roles = await this._prisma.role.findMany({})
 
-    const roleNotWeddingIds = roles.filter((role) => role.name !== 'Marié').map((role) => role.id)
+    const roleNotWeddingIds = roles
+      .filter((role) => !['Marié', 'Professionnel'].includes(role.name))
+      .map((role) => role.id)
     const weddingRoleId = roles.find((role) => role.name === 'Marié')?.id as number
     const factory = new UserFactory(roleNotWeddingIds)
     await this._prisma.user.createMany({

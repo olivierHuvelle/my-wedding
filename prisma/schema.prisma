@@ -47,7 +47,6 @@ model User {
 model Guest {
   id               Int      @id @default(autoincrement())
   userId           Int
-  parentId         Int?
   firstName        String
   lastName         String?
   isChild          Boolean
@@ -62,9 +61,7 @@ model Guest {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  parent   Guest?       @relation("ChildGuests", fields: [parentId], references: [id])
-  children Guest[]      @relation("ChildGuests")
-  events   EventGuest[]
+  events EventGuest[]
 }
 
 model Contact {
