@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Menu {
+  Adult
+  Child
+  None
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  parentId  Int?
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  children Role[] @relation("ChildRoles")
+  parent   Role?  @relation("ChildRoles", fields: [parentId], references: [id])
+  users    User[]
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  roleId           Int
+  email            String    @unique
+  password         String
+  confirmationCode String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  confirmedAt      DateTime?
+
+  role Role @relation(fields: [roleId], references: [id])
+}
+
+model Guest {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  parentId         Int?
+  firstName        String
+  lastName         String?
+  isChild          Boolean
+  foodProhibitions String?
+  menu             Menu
+  Remark           String?
+  zipCode          String
+  number           String
+  Street           String
+  City             String
+  phone            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  parent   Guest?       @relation("ChildGuests", fields: [parentId], references: [id])
+  children Guest[]      @relation("ChildGuests")
+  events   EventGuest[]
+}
+
+model Contact {
+  id        Int            @id @default(autoincrement())
+  phone     String?
+  email     String?        @unique
+  firstName String?
+  lastName  String?
+  zipCode   String
+  number    String
+  Street    String
+  City      String
+  Remark    String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  events    ContactEvent[]
+}
+
+model Event {
+  id         Int      @id @default(autoincrement())
+  name       String
+  startingAt DateTime
+  endingAt   DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  contacts ContactEvent[]
+  guests   EventGuest[]
+}
+
+model ContactEvent {
+  eventId   Int
+  contactId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event   Event   @relation(fields: [eventId], references: [id])
+  contact Contact @relation(fields: [contactId], references: [id])
+
+  @@id([eventId, contactId])
+}
+
+model EventGuest {
+  eventId   Int
+  guestId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id])
+  guest Guest @relation(fields: [guestId], references: [id])
+
+  @@id([eventId, guestId])
+}
