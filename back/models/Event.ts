@@ -36,4 +36,5 @@ export const EventCreateInput = z
   .refine((data) => data.endingAt > data.startingAt, {
     message: 'la date de fin doit être postérieure à la date de début',
     path: ['endingAt'],
-  }) satisfies z.Schema<Prisma.EventUncheckedCreateInput>
+  })
+  .innerType() satisfies z.Schema<Prisma.EventUncheckedCreateInput>

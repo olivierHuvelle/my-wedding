@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import prisma from '../database/db'
 import { RoleSeeder } from './RoleSeeder'
 import { ContactSeeder } from './ContactSeeder'
 import { EventSeeder } from './EventSeeder'
@@ -6,8 +6,6 @@ import { UserSeeder } from './UserSeeder'
 import { GuestSeeder } from './GuestSeeder'
 import { ContactEventSeeder } from './ContactEventSeeder'
 import { EventGuestSeeder } from './EventGuestSeeder'
-
-const prisma = new PrismaClient()
 
 async function main() {
   const roleSeeder = new RoleSeeder()

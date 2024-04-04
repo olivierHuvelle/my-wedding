@@ -1,10 +1,6 @@
 import { BaseSeeder } from './BaseSeeder'
 
 export class ContactEventSeeder extends BaseSeeder {
-  constructor() {
-    super()
-  }
-
   async seed() {
     console.log('starting seeding contactEvents')
     const events = await this._prisma.event.findMany({})

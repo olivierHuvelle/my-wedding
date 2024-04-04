@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client'
-export abstract class BaseSeeder {
-  protected _prisma: PrismaClient
+import prisma from '../database/db'
 
-  constructor() {
-    this._prisma = new PrismaClient()
-  }
+export abstract class BaseSeeder {
+  protected _prisma = prisma
 
   abstract seed(): Promise<void>
 }
