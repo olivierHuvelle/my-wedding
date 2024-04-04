@@ -5,6 +5,7 @@ import { EventSeeder } from './EventSeeder'
 import { UserSeeder } from './UserSeeder'
 import { GuestSeeder } from './GuestSeeder'
 import { ContactEventSeeder } from './ContactEventSeeder'
+import { EventGuestSeeder } from './EventGuestSeeder'
 
 const prisma = new PrismaClient()
 
@@ -15,6 +16,8 @@ async function main() {
   const userSeeder = new UserSeeder()
   const guestSeeder = new GuestSeeder()
   const contactEventSeeder = new ContactEventSeeder()
+  const eventGuestSeeder = new EventGuestSeeder()
+
   try {
     await roleSeeder.seed()
     await contactSeeder.seed()
@@ -22,6 +25,7 @@ async function main() {
     await userSeeder.seed()
     await guestSeeder.seed()
     await contactEventSeeder.seed()
+    await eventGuestSeeder.seed()
     console.log('Seed completed successfully.')
   } catch (error) {
     console.error('An error occurred while seeding:', error)
