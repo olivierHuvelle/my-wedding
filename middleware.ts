@@ -1,7 +1,8 @@
-import {NextRequest} from "next/server";
-import {SessionService} from "@/back/services/SessionService";
+import {chain} from "@/middlewares/chain";
+import {withUpdateSession} from "@/middlewares/update-session";
 
-export async function middleware(request: NextRequest){
-    const sessionService = new SessionService()
-    return await sessionService.updateSessionExpirationFromRequest(request)
+export default chain([withUpdateSession])
+
+export const config = {
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 }

@@ -24,21 +24,20 @@ export class SessionService {
   }
 
   async updateSessionExpirationFromRequest(request: NextRequest) {
+    const response = NextResponse.next()
     const session = request.cookies.get('session')?.value
     if (!session) {
-      return
+      return response
     }
+
     const parsedSession = await this._authenticationService.decrypt(session)
     parsedSession.expires = new Date(Date.now() + 20 * 60 * 1000)
-    const response = NextResponse.next()
-
     response.cookies.set({
       name: 'session',
       value: await this._authenticationService.encrypt(parsedSession),
       httpOnly: true,
       expires: parsedSession.exp,
     })
-
     return response
   }
 }
