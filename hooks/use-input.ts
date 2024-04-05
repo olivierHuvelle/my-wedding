@@ -30,6 +30,7 @@ const useInput = (schema: ZodSchema, schemaKey: string, defaultValue = '') => {
   }
 
   return {
+    name: schemaKey,
     value: enteredValue,
     isValid: isValueValid,
     hadFocus,

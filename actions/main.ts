@@ -1,5 +1,5 @@
 export interface BaseFormState {
   errors: {
-    _form?: string[]
+    _form: string[]
   }
 }

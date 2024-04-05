@@ -11,21 +11,30 @@ import { loginSchema } from '@/back/models/User'
 
 export interface LoginFormState extends BaseFormState {
   errors: {
-    email?: string[]
-    password?: string[]
-    _form?: string[]
+    email: string[]
+    password: string[]
+    _form: string[]
   }
 }
 
 export async function login(formData: unknown): Promise<LoginFormState> {
   const userService = new UserService()
   const sessionService = new SessionService()
+  const response: LoginFormState = {
+    errors: {
+      email: [],
+      password: [],
+      _form: [],
+    },
+  }
   const result = loginSchema.safeParse(formData)
 
   if (!result.success) {
-    return {
-      errors: result.error.flatten().fieldErrors,
+    response.errors = {
+      ...response.errors,
+      ...result.error.flatten().fieldErrors,
     }
+    return response
   }
 
   try {
@@ -39,17 +48,11 @@ export async function login(formData: unknown): Promise<LoginFormState> {
       (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') ||
       err instanceof IncorrectPasswordError
     ) {
-      return {
-        errors: {
-          _form: ['Mauvais email et/ou mot de passe'],
-        },
-      }
+      response.errors._form = ['Mauvais email et/ou mot de passe']
+      return response
     } else {
-      return {
-        errors: {
-          _form: ['Une erreur est survenue, veuillez réessayer plus tard'],
-        },
-      }
+      response.errors._form = ['Une erreur est survenue, veuillez réessayer plus tard']
+      return response
     }
   }
   redirect('/')
