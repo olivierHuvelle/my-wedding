@@ -1,4 +1,4 @@
-import LoginForm from '@/components/authentication/loginForm'
+import LoginForm from '@/components/authentication/login-form'
 
 export default async function Home() {
   return (
