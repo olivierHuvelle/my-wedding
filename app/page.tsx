@@ -1,17 +1,12 @@
-import { SessionService } from '@/back/services/SessionService'
 import LoginForm from '@/app/loginForm'
-import LogoutForm from '@/app/logoutForm'
 
 export default async function Home() {
-  const sessionService = new SessionService()
-  const session = await sessionService.getSession()
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <LoginForm />
-      <LogoutForm />
-      <div>
-        <pre style={{ backgroundColor: 'red', display: 'block' }}>{JSON.stringify(session, null, 2)}</pre>
-      </div>
-    </main>
+    <div className="flex h-screen items-center justify-center bg-gray-100">
+      <main className="mb-4 min-w-80 rounded bg-white px-8 pb-8 pt-6 shadow-md">
+        <h1 className="mb-4 text-center text-2xl">Connexion</h1>
+        <LoginForm />
+      </main>
+    </div>
   )
 }

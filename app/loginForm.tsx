@@ -1,10 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { loginSchema } from '@/back/models/User'
-import { login, LoginFormState } from '@/actions/authentication'
 import useInput from '@/hooks/use-input'
 import { isEqual } from 'lodash'
+import { loginSchema } from '@/back/models/User'
+import { login, LoginFormState } from '@/actions/authentication'
+import { Input, Button } from '@nextui-org/react'
+//import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import Alert from '@/components/ui/alert'
 
 export default function LoginForm() {
   const [error, setError] = useState<LoginFormState>({ errors: { email: [], password: [], _form: [] } })
@@ -54,38 +57,36 @@ export default function LoginForm() {
 
   return (
     <form action={submitHandler}>
-      <div>
-        <label htmlFor="email">Email</label>
-        <br />
-        <input
-          type="text"
-          placeholder="email"
-          name="email"
-          id="email"
-          value={email.value}
-          onInput={email.inputHandler}
-          onBlur={email.blurHandler}
-        />
-        {!!error.errors.email.length && <p style={{ color: 'orange' }}>{error.errors.email}</p>}
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <br />
-        <input
-          type="text"
-          placeholder="password"
-          name="password"
-          id="password"
-          value={password.value}
-          onInput={password.inputHandler}
-          onBlur={password.blurHandler}
-        />
-        {!!error.errors.password.length && <p style={{ color: 'orange' }}>{error.errors.password}</p>}
-      </div>
-      {!!error.errors._form.length && <p style={{ color: 'red' }}>{error.errors._form}</p>}
-      <button type="submit" disabled={isConfirmButtonDisabled}>
-        Login
-      </button>
+      <Input
+        name="email"
+        label="Email"
+        placeholder="john.doe@gmail.com"
+        isRequired={true}
+        value={email.value}
+        onInput={email.inputHandler}
+        onBlur={email.blurHandler}
+        isInvalid={!!error.errors.email.length}
+        errorMessage={error.errors.email}
+      />
+      <Input
+        name="password"
+        label="Mot de passe"
+        placeholder="secret"
+        isRequired={true}
+        value={password.value}
+        onInput={password.inputHandler}
+        onBlur={password.blurHandler}
+        isInvalid={!!error.errors.password.length}
+        errorMessage={error.errors.password}
+      />
+
+      {!!error.errors._form.length && (
+        <Alert title="Une erreur s'est produite" content={error.errors._form} variant="danger" className="mb-2" />
+      )}
+
+      <Button type="submit" color="success" variant="flat" disabled={isConfirmButtonDisabled} className="w-full">
+        Se connecter
+      </Button>
     </form>
   )
 }
