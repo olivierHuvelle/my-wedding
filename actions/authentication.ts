@@ -20,7 +20,6 @@ export interface LoginFormState extends BaseFormState {
 export async function login(formData: unknown): Promise<LoginFormState> {
   const userService = new UserService()
   const sessionService = new SessionService()
-  console.log('server action') // TODO delete me
   const result = loginSchema.safeParse(formData)
 
   if (!result.success) {
@@ -53,7 +52,6 @@ export async function login(formData: unknown): Promise<LoginFormState> {
       }
     }
   }
-
   redirect('/')
 }
 
