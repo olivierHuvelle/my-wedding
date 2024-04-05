@@ -6,11 +6,12 @@ import { isEqual } from 'lodash'
 import { loginSchema } from '@/back/models/User'
 import { login, LoginFormState } from '@/actions/authentication'
 import { Input, Button } from '@nextui-org/react'
-//import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
 
 export default function LoginForm() {
   const [error, setError] = useState<LoginFormState>({ errors: { email: [], password: [], _form: [] } })
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const email = useInput(loginSchema.pick({ email: true }), 'email')
   const password = useInput(loginSchema.pick({ password: true }), 'password')
   const inputs = [email, password]
@@ -33,6 +34,10 @@ export default function LoginForm() {
       }
     })
   }, [inputs, error])
+
+  const toggleVisibilityHandler = () => {
+    setIsPasswordVisible(!isPasswordVisible)
+  }
 
   const submitHandler = async (formData: FormData) => {
     const result = loginSchema.safeParse({
@@ -74,10 +79,20 @@ export default function LoginForm() {
         placeholder="secret"
         isRequired={true}
         value={password.value}
+        type={isPasswordVisible ? 'text' : 'password'}
         onInput={password.inputHandler}
         onBlur={password.blurHandler}
         isInvalid={!!error.errors.password.length}
         errorMessage={error.errors.password}
+        endContent={
+          <button className="focus:outline-none" type="button" onClick={toggleVisibilityHandler}>
+            {isPasswordVisible ? (
+              <FaRegEye className="pointer-events-none text-2xl text-default-400" />
+            ) : (
+              <FaRegEyeSlash className="pointer-events-none text-2xl text-default-400" />
+            )}
+          </button>
+        }
       />
 
       {!!error.errors._form.length && (
