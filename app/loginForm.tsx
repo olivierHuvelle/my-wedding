@@ -1,25 +1,45 @@
 'use client'
 
-import { useFormState } from 'react-dom'
-import { login } from '@/actions/authentication'
+import { useState } from 'react'
+import { loginSchema } from '@/back/models/User'
+import { login, LoginFormState } from '@/actions/authentication'
 
 export default function LoginForm() {
-  const [formState, action] = useFormState(login, { errors: {} })
+  const [error, setError] = useState<LoginFormState>({ errors: {} })
+
+  const submitHandler = async (formData: FormData) => {
+    console.log('client side validation') // TODO delete me
+    const result = loginSchema.safeParse({
+      email: formData.get('email'),
+      password: formData.get('password'),
+    })
+
+    if (!result.success) {
+      setError({ errors: result.error.flatten().fieldErrors })
+      return
+    }
+    setError({ errors: {} })
+    const response = await login(result.data)
+    if (response.errors) {
+      setError({ errors: response.errors })
+    }
+  }
+
   return (
-    <form action={action}>
+    <form action={submitHandler}>
       <div>
         <label htmlFor="email">Email</label>
         <br />
         <input type="text" placeholder="email" name="email" id="email" />
-        {!!formState.errors.email && <p>{formState.errors.email}</p>}
+        {!!error.errors.email && <p style={{ color: 'orange' }}>{error.errors.email}</p>}
       </div>
       <div>
         <label htmlFor="password">Password</label>
         <br />
         <input type="text" placeholder="password" name="password" id="password" />
-        {!!formState.errors.password && <p>{formState.errors.password}</p>}
+        {!!error.errors.password && <p style={{ color: 'orange' }}>{error.errors.password}</p>}
       </div>
-      {!!formState.errors._form && <p>{formState.errors._form}</p>}
+      {!!error.errors._form && <p style={{ color: 'red' }}>{error.errors._form}</p>}
       <button type="submit">Login</button>
     </form>
   )

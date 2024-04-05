@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation'
 import { IncorrectPasswordError } from '@/back/services/UserService'
 import { loginSchema } from '@/back/models/User'
 
-interface LoginFormState extends BaseFormState {
+export interface LoginFormState extends BaseFormState {
   errors: {
     email?: string[]
     password?: string[]
@@ -17,14 +17,11 @@ interface LoginFormState extends BaseFormState {
   }
 }
 
-export async function login(formState: LoginFormState, formData: FormData): Promise<LoginFormState> {
+export async function login(formData: unknown): Promise<LoginFormState> {
   const userService = new UserService()
   const sessionService = new SessionService()
-
-  const result = loginSchema.safeParse({
-    email: formData.get('email'),
-    password: formData.get('password'),
-  })
+  console.log('server action') // TODO delete me
+  const result = loginSchema.safeParse(formData)
 
   if (!result.success) {
     return {
