@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import useInput from '@/hooks/use-input'
 import { isEqual } from 'lodash'
 import { loginSchema } from '@/back/models/User'
@@ -14,7 +14,7 @@ export default function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const email = useInput(loginSchema.pick({ email: true }), 'email')
   const password = useInput(loginSchema.pick({ password: true }), 'password')
-  const inputs = [email, password]
+  const inputs = useMemo(() => [email, password], [email, password])
   const isConfirmButtonDisabled = !inputs.every((input) => input.isValid)
 
   useEffect(() => {
