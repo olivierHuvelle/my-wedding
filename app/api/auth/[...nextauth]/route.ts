@@ -2,13 +2,14 @@ import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { UserService } from '@/back/services/UserService'
 import { loginSchema } from '@/back/models/User'
+import paths from '@/utils/paths'
 
 const handler = NextAuth({
   session: {
     strategy: 'jwt',
   },
   pages: {
-    signIn: '/login',
+    signIn: paths.login(),
   },
   providers: [
     CredentialsProvider({

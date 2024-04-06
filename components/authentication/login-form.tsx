@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
-import { isEqual } from 'lodash'
-import { loginSchema } from '@/back/models/User'
 import { LoginFormState } from '@/actions/authentication'
+import { loginSchema } from '@/back/models/User'
 import { Input, Button } from '@nextui-org/react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { isEqual } from 'lodash'
+import paths from '@/utils/paths'
 
 export default function LoginForm() {
   const [error, setError] = useState<LoginFormState>({ errors: { email: [], password: [], _form: [] } })
@@ -70,7 +71,7 @@ export default function LoginForm() {
         response.error === 'CredentialsSignin' ? ['Identifiants invalides'] : ["Une erreur s'est produite"]
       setError(formattedError)
     } else {
-      router.push('/')
+      router.push(paths.home())
       router.refresh()
     }
   }
