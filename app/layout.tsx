@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Providers from '@/app/providers'
-import { getServerSession } from 'next-auth'
+import TheHeader from '@/components/layout/the-header'
 import './globals.css'
-import LogoutForm from '@/components/authentication/logout-form'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,18 +11,17 @@ export const metadata: Metadata = {
   description: 'My Wedding - Olivier et Laurie',
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await getServerSession()
   return (
     <html lang="fr">
-      <body className={`flex h-screen items-center justify-center bg-gray-100 ${inter.className}`}>
+      <body className={inter.className}>
         <Providers>
-          {!!session && <LogoutForm />}
-          {children}
+          <TheHeader />
+          <div className="flex h-screen items-center justify-center bg-gray-100">{children}</div>
         </Providers>
       </body>
     </html>
