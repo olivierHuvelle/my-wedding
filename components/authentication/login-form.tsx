@@ -4,10 +4,12 @@ import { useState, useEffect, useMemo } from 'react'
 import useInput from '@/hooks/use-input'
 import { isEqual } from 'lodash'
 import { loginSchema } from '@/back/models/User'
-import { login, LoginFormState } from '@/actions/authentication'
+import { LoginFormState } from '@/actions/authentication'
 import { Input, Button } from '@nextui-org/react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
   const [error, setError] = useState<LoginFormState>({ errors: { email: [], password: [], _form: [] } })
@@ -16,6 +18,8 @@ export default function LoginForm() {
   const password = useInput(loginSchema.pick({ password: true }), 'password')
   const inputs = useMemo(() => [email, password], [email, password])
   const isConfirmButtonDisabled = !inputs.every((input) => input.isValid)
+
+  const router = useRouter()
 
   useEffect(() => {
     inputs.forEach((input) => {
@@ -54,9 +58,20 @@ export default function LoginForm() {
       return
     }
     setError(formattedError)
-    const response = await login(result.data)
-    if (response?.errors) {
-      setError({ errors: response.errors })
+
+    const response = await signIn('credentials', {
+      email: result.data.email,
+      password: result.data.password,
+      redirect: false,
+    })
+
+    if (response?.error) {
+      formattedError.errors._form =
+        response.error === 'CredentialsSignin' ? ['Identifiants invalides'] : ["Une erreur s'est produite"]
+      setError(formattedError)
+    } else {
+      router.push('/')
+      router.refresh()
     }
   }
 
