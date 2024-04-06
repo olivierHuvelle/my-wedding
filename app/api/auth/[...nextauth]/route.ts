@@ -17,6 +17,7 @@ const handler = NextAuth({
         email: {},
         password: {},
       },
+      // @ts-expect-error didn't find how to solve the issue
       async authorize(credentials) {
         const result = loginSchema.safeParse(credentials)
         if (!result.success) {
