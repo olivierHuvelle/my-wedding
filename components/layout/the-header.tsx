@@ -22,7 +22,7 @@ export default function TheHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isLoginPage = pathName === paths.login()
   const session = useSession()
-  console.log('CLIENT : ', session.data?.user) // TODO delete me
+
   const logInConditionalRendering = () => {
     if (session.status === 'authenticated') {
       return <LogoutForm />
