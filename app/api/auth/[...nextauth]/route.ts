@@ -33,6 +33,17 @@ const handler = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      user && (token.user = user)
+      return token
+    },
+    session: async ({ session, token }) => {
+      // @ts-expect-error didn't find how to solve the issue
+      session.user = token.user
+      return session
+    },
+  },
 })
 
 export { handler as GET, handler as POST }

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import {
   Navbar,
   NavbarBrand,
@@ -13,12 +14,25 @@ import {
   Link,
 } from '@nextui-org/react'
 import TheLogo from '@/components/layout/the-logo'
+import LogoutForm from '@/components/authentication/logout-form'
 import paths from '@/utils/paths'
 
-export default function App() {
+export default function TheHeader() {
   const pathName = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isLoginPage = pathName === paths.login()
+  const session = useSession()
+  console.log('CLIENT : ', session.data?.user) // TODO delete me
+  const logInConditionalRendering = () => {
+    if (session.status === 'authenticated') {
+      return <LogoutForm />
+    }
+    return (
+      <NavbarItem className={`${isLoginPage ? 'invisible' : ''}`}>
+        <Link href={paths.login()}>Connexion</Link>
+      </NavbarItem>
+    )
+  }
 
   const menuItems = [
     'Profile',
@@ -60,11 +74,7 @@ export default function App() {
           </Link>
         </NavbarItem>
       </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem className={`hidden lg:flex ${isLoginPage ? 'invisible' : ''}`}>
-          <Link href={paths.login()}>Connexion</Link>
-        </NavbarItem>
-      </NavbarContent>
+      <NavbarContent justify="end">{logInConditionalRendering()}</NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>

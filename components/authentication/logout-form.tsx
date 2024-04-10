@@ -13,8 +13,8 @@ export default function LogoutForm() {
 
   return (
     <form onSubmit={submitHandler}>
-      <Button type="submit" color="danger" variant="bordered">
-        Se déconnecter
+      <Button type="submit" color="danger" variant="light">
+        Déconnexion
       </Button>
     </form>
   )
