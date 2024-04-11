@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
@@ -21,6 +22,7 @@ export default function LoginForm() {
   const isConfirmButtonDisabled = !inputs.every((input) => input.isValid)
 
   const router = useRouter()
+  const session = useSession()
 
   useEffect(() => {
     inputs.forEach((input) => {
@@ -71,7 +73,11 @@ export default function LoginForm() {
         response.error === 'CredentialsSignin' ? ['Identifiants invalides'] : ["Une erreur s'est produite"]
       setError(formattedError)
     } else {
-      router.push(paths.home())
+      if (session.data?.user?.roleCategory === 'Marié') {
+        router.push(paths.married())
+      } else {
+        router.push(paths.guest())
+      }
       router.refresh()
     }
   }
