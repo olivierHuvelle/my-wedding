@@ -1,3 +1,8 @@
-export {default} from 'next-auth/middleware';
+import {chain} from "@/middlewares/chain";
+import withAuthMiddleware from '@/middlewares/with-auth'
 
-export const config = {matcher: ['/married', '/guest']};
+export default chain([withAuthMiddleware])
+
+export const config = {
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+}
