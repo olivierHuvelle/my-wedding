@@ -18,6 +18,7 @@ export default function withRoleMiddleware(middleware: CustomMiddleware) {
 
     for (const key in paths) {
       if (Object.hasOwnProperty.call(paths, key)) {
+        // @ts-expect-error We know that the key matches
         const path = paths[key]
         const pathName = path.url
 

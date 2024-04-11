@@ -2,16 +2,23 @@ import { compareSync } from 'bcrypt'
 import prisma from '@/back/database/db'
 import { RoleService } from '@/back/services/RoleService'
 
+export interface UserSession {
+  id: number
+  email: string
+  roleCategory: string
+}
+
 export class IncorrectPasswordError extends Error {
   constructor() {
     super('invalid password')
     this.name = 'IncorrectPasswordError'
   }
 }
+
 export class UserService {
   protected _prisma = prisma
 
-  async findUserByEmailAndPassword(email: string, password: string) {
+  async findUserByEmailAndPassword(email: string, password: string): Promise<UserSession> {
     const roleService = new RoleService()
     const user = await this._prisma.user.findFirstOrThrow({
       where: {

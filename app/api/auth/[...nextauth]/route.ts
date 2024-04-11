@@ -1,7 +1,8 @@
-import NextAuth from 'next-auth'
+import NextAuth, { Session } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { UserService } from '@/back/services/UserService'
 import { loginSchema } from '@/back/models/User'
+
 import paths from '@/utils/paths'
 
 const handler = NextAuth({
@@ -39,8 +40,9 @@ const handler = NextAuth({
       return token
     },
     session: async ({ session, token }) => {
-      // @ts-expect-error didn't find how to solve the issue
-      session.user = token.user
+      if (token?.user) {
+        session.user = token.user as Session['user']
+      }
       return session
     },
   },
