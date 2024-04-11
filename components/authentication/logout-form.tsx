@@ -8,7 +8,7 @@ import paths from '@/utils/paths'
 export default function LogoutForm() {
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await signOut({ callbackUrl: paths.login() })
+    await signOut({ callbackUrl: paths.login.url })
   }
 
   return (

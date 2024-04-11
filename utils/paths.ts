@@ -1,15 +1,38 @@
+export enum RoleCategories {
+  Married = 'Marié',
+  Guest = 'Invité',
+}
+
 const paths = {
-  home() {
-    return '/'
+  home: {
+    url: '/',
+    isAuthenticated: false,
+    roleCategories: [],
   },
-  login() {
-    return '/login'
+  login: {
+    url: '/login',
+    isAuthenticated: false,
+    roleCategories: [],
   },
-  guest() {
-    return '/guest'
+  signIn: {
+    url: '/api/auth/signin',
+    isAuthenticated: false,
+    roleCategories: [],
   },
-  married() {
-    return '/married'
+  guest: {
+    url: '/guest',
+    isAuthenticated: true,
+    roleCategories: [RoleCategories.Married, RoleCategories.Guest],
+  },
+  married: {
+    url: '/married',
+    isAuthenticated: true,
+    roleCategories: [RoleCategories.Married],
+  },
+  permission: {
+    url: '/permission',
+    isAuthenticated: false,
+    roleCategories: [],
   },
 }
 

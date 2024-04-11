@@ -14,7 +14,7 @@ export default function NotFoundPage() {
               <h1 className="my-2 text-2xl font-bold text-gray-800">Vous avez trouvé une page introuvable :)</h1>
               <p className="mb-6 mt-2 text-gray-800">Retour en terra cognita !</p>
               <Link
-                href={paths.home()}
+                href={paths.home.url}
                 className="md my-2 rounded  border bg-indigo-600 px-8 py-4 text-center text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50 sm:w-full lg:w-auto"
               >
                 Take me home!

@@ -20,7 +20,7 @@ import paths from '@/utils/paths'
 export default function TheHeader() {
   const pathName = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const isLoginPage = pathName === paths.login()
+  const isLoginPage = pathName === paths.login.url
   const session = useSession()
 
   const logInConditionalRendering = () => {
@@ -29,7 +29,7 @@ export default function TheHeader() {
     }
     return (
       <NavbarItem className={`${isLoginPage ? 'invisible' : ''}`}>
-        <Link href={paths.login()}>Connexion</Link>
+        <Link href={paths.login.url}>Connexion</Link>
       </NavbarItem>
     )
   }

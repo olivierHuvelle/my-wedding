@@ -74,9 +74,9 @@ export default function LoginForm() {
       setError(formattedError)
     } else {
       if (session.data?.user?.roleCategory === 'Marié') {
-        router.push(paths.married())
+        router.push(paths.married.url)
       } else {
-        router.push(paths.guest())
+        router.push(paths.guest.url)
       }
       router.refresh()
     }
