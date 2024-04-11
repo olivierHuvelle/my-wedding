@@ -1,12 +1,21 @@
 import { ChangeEvent, useState } from 'react'
 import { ZodSchema } from 'zod'
 
-const useInput = (schema: ZodSchema, schemaKey: string, defaultValue = '') => {
+type BeforeValidationFunction = (value: string) => unknown
+type AfterValidationFunction = (value: unknown) => string
+
+const useInput = (
+  schema: ZodSchema,
+  schemaKey: string,
+  defaultValue = '',
+  beforeValidationFn?: BeforeValidationFunction,
+  afterValidation?: AfterValidationFunction,
+) => {
   const [enteredValue, setEnteredValue] = useState(defaultValue)
   const [hadFocus, setHadFocus] = useState(!!enteredValue)
   let errors: string[] = []
   let isValueValid = false
-  const result = schema.safeParse({ [schemaKey]: enteredValue })
+  const result = schema.safeParse({ [schemaKey]: beforeValidationFn ? beforeValidationFn(enteredValue) : enteredValue })
 
   if (result.success) {
     isValueValid = true
@@ -31,7 +40,7 @@ const useInput = (schema: ZodSchema, schemaKey: string, defaultValue = '') => {
 
   return {
     name: schemaKey,
-    value: enteredValue,
+    value: afterValidation ? afterValidation(enteredValue) : enteredValue,
     isValid: isValueValid,
     hadFocus,
     hasError,

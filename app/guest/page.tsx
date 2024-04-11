@@ -1,7 +1,8 @@
-export default function GuestPage() {
+import EventList from '@/components/event/event-list'
+export default async function GuestPage() {
   return (
     <div>
-      <h2>Guest page</h2>
+      <EventList />
     </div>
   )
 }

@@ -94,6 +94,7 @@ export default function LoginForm() {
         onBlur={email.blurHandler}
         isInvalid={!!error.errors.email.length}
         errorMessage={error.errors.email}
+        autoComplete="on"
       />
       <Input
         name="password"
@@ -106,6 +107,7 @@ export default function LoginForm() {
         onBlur={password.blurHandler}
         isInvalid={!!error.errors.password.length}
         errorMessage={error.errors.password}
+        autoComplete="on"
         endContent={
           <button className="focus:outline-none" type="button" onClick={toggleVisibilityHandler}>
             {isPasswordVisible ? (
