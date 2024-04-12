@@ -37,9 +37,22 @@ export default function EventCard({ event }: EventCardProps) {
     <>
       <Card className="my-2 cursor-pointer">
         <CardHeader className="flex gap-3">
-          <div className="flex">
-            <FaRegCalendarCheck className="mr-2 text-2xl" />
-            <div className="text-md">{event.name}</div>
+          <div className="flex w-full flex-row justify-between">
+            <div className="flex items-center">
+              <FaRegCalendarCheck className="mr-2 text-2xl" />
+              <div className="text-md">{event.name}</div>
+            </div>
+            <div className="flex items-center">
+              <p>
+                {event.startingAt
+                  .toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })
+                  .replace(/\//g, '/')}
+              </p>
+            </div>
           </div>
         </CardHeader>
         <Divider />
