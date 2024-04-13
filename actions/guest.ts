@@ -3,6 +3,24 @@
 import { auth } from '@/utils/auth'
 import { RoleCategories } from '@/utils/paths'
 import { GuestService } from '@/back/services/GuestService'
+import {BaseFormState} from "@/actions/main";
+
+export interface GuestFormState extends BaseFormState {
+  errors: {
+    firstName: string[]
+    lastName: string[]
+    isChild: string[]
+    foodProhibitions: string[]
+    menu: string[]
+    zipCode: string[]
+    number: string[]
+    phone: string[]
+    city: string[]
+    remark: string[]
+    street: string[]
+    _form: string[]
+  }
+}
 
 export async function getGuestsForUserId(userId: number) {
   const session = await auth()

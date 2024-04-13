@@ -1,5 +1,9 @@
-import { Card, CardHeader, CardBody, CardFooter, Divider, Button } from '@nextui-org/react'
+'use client'
+
+import { Card, CardHeader, CardBody, CardFooter, Divider, Button, useDisclosure } from '@nextui-org/react'
+import GuestForm from "@/components/guest/guest-form";
 import { Guest, Event, EventGuest } from '@prisma/client'
+
 
 interface GuestCardProps {
   guest: Guest & {
@@ -8,6 +12,9 @@ interface GuestCardProps {
 }
 
 export default function GuestCard({ guest }: GuestCardProps) {
+  const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
+
+
   return (
     <>
       <Card className="my-2 max-w-xl cursor-pointer">
@@ -36,7 +43,7 @@ export default function GuestCard({ guest }: GuestCardProps) {
         <Divider />
         <CardFooter>
           <div className="flex w-full flex-row justify-end">
-            <Button variant="flat" color="warning" className="mx-2">
+            <Button variant="flat" color="warning" className="mx-2" onClick={onEditModalOpen}>
               Modifier
             </Button>
             <Button variant="flat" color="danger">
@@ -45,6 +52,7 @@ export default function GuestCard({ guest }: GuestCardProps) {
           </div>
         </CardFooter>
       </Card>
+      <GuestForm guest={guest} isOpen={isEditModalOpen} onOpenChange={onEditOpenChange} userId={guest.userId} />
     </>
   )
 }

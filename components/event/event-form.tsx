@@ -85,7 +85,7 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
     const data = {
       name: formData.get('name'),
       city: formData.get('city'),
-      number: formData.get('street'),
+      number: formData.get('number'),
       zipCode: formData.get('zipCode'),
       street: formData.get('street'),
       startingAt: new Date(formData.get('startingAt') as string | Date),
