@@ -8,21 +8,7 @@ import { EventCreateInput } from '@/back/models/Event'
 import { Event } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { EventFormState } from '@/actions/main'
-
-export async function createEmptyEventFormStateError(): Promise<EventFormState> {
-  return {
-    errors: {
-      name: [],
-      city: [],
-      number: [],
-      street: [],
-      zipCode: [],
-      startingAt: [],
-      endingAt: [],
-      _form: [],
-    },
-  }
-}
+import { createEmptyEventFormState } from '@/actions/main'
 
 export async function getEvents() {
   const session = await auth()
@@ -34,7 +20,7 @@ export async function getEvents() {
 }
 
 export async function updateEvent(event: Event, formData: unknown): Promise<EventFormState> {
-  const res = await createEmptyEventFormStateError()
+  const res = createEmptyEventFormState()
   const session = await auth()
 
   if (!session || !session.user) {

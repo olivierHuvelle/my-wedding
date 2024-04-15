@@ -8,7 +8,8 @@ import { EventFormState } from '@/actions/main'
 import { EventCreateInput } from '@/back/models/Event'
 import { isEqual } from 'lodash'
 import Alert from '@/components/ui/alert'
-import { updateEvent, createEmptyEventFormStateError } from '@/actions/event'
+import { updateEvent } from '@/actions/event'
+import { createEmptyEventFormState } from '@/actions/main'
 
 interface EventFormProps {
   event: Event
@@ -17,18 +18,7 @@ interface EventFormProps {
 }
 
 export default function EventForm({ event, isOpen, onOpenChange }: EventFormProps) {
-  const [error, setError] = useState<EventFormState>({
-    errors: {
-      name: [],
-      city: [],
-      number: [],
-      street: [],
-      zipCode: [],
-      startingAt: [],
-      endingAt: [],
-      _form: [],
-    },
-  })
+  const [error, setError] = useState<EventFormState>(createEmptyEventFormState())
   const formRef = useRef<HTMLFormElement>(null)
   const name = useInput(EventCreateInput.pick({ name: true }), 'name', event.name)
   const city = useInput(EventCreateInput.pick({ city: true }), 'city', event.city)
@@ -91,8 +81,7 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
       startingAt: new Date(formData.get('startingAt') as string | Date),
       endingAt: new Date(formData.get('endingAt') as string | Date),
     }
-
-    const formattedError = await createEmptyEventFormStateError()
+    const formattedError = createEmptyEventFormState()
     const result = EventCreateInput.safeParse(data)
     if (!result.success) {
       formattedError.errors = {
