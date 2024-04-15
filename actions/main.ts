@@ -56,3 +56,13 @@ export function createEmptyEventFormState(): EventFormState {
     },
   }
 }
+
+export function createEmptyLoginFormState(): LoginFormState {
+  return {
+    errors: {
+      email: [],
+      password: [],
+      _form: [],
+    },
+  }
+}

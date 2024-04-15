@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
 import { LoginFormState } from '@/actions/main'
 import { loginSchema } from '@/back/models/User'
+import { createEmptyLoginFormState } from '@/actions/main'
 import { Input, Button } from '@nextui-org/react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
@@ -14,7 +15,7 @@ import { isEqual } from 'lodash'
 import paths from '@/utils/paths'
 
 export default function LoginForm() {
-  const [error, setError] = useState<LoginFormState>({ errors: { email: [], password: [], _form: [] } })
+  const [error, setError] = useState<LoginFormState>(createEmptyLoginFormState)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const email = useInput(loginSchema.pick({ email: true }), 'email')
   const password = useInput(loginSchema.pick({ password: true }), 'password')
@@ -35,8 +36,17 @@ export default function LoginForm() {
       } else if (!input.hasError && error.errors[input.name as keyof LoginFormState['errors']].length) {
         setError((prevState) => {
           const newError = { ...prevState }
-          newError.errors[input.name as keyof LoginFormState['errors']] = []
-          return newError
+          if (
+            isEqual(
+              error.errors[input.name as keyof LoginFormState['errors']],
+              prevState.errors[input.name as keyof LoginFormState['errors']],
+            )
+          ) {
+            return prevState
+          } else {
+            newError.errors[input.name as keyof LoginFormState['errors']] = []
+            return newError
+          }
         })
       }
     })
@@ -51,7 +61,7 @@ export default function LoginForm() {
       email: formData.get('email'),
       password: formData.get('password'),
     })
-    const formattedError: LoginFormState = { errors: { email: [], password: [], _form: [] } }
+    const formattedError = createEmptyLoginFormState()
     if (!result.success) {
       formattedError.errors = {
         ...formattedError.errors,

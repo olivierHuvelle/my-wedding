@@ -102,7 +102,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest }: Guest
       } else if (!input.hasError && error.errors[input.name as keyof GuestFormState['errors']].length) {
         setError((prevState) => {
           const newError = { ...prevState }
-
           if (
             isEqual(
               error.errors[input.name as keyof GuestFormState['errors']],
