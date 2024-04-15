@@ -16,6 +16,7 @@ interface GuestFactoryObject {
   city: string
   remark: string
   street: string
+  age?: number | undefined
 }
 
 export class GuestFactory {
@@ -73,6 +74,7 @@ export class GuestFactory {
       street: guest.street,
       phone: guest.phone,
       remark: '',
+      age: 1,
     }
   }
 
@@ -90,6 +92,7 @@ export class GuestFactory {
       street: guest.street,
       phone: guest.phone,
       remark: '',
+      age: 8,
     }
   }
 
