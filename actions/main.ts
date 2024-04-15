@@ -42,6 +42,14 @@ export interface GuestFormState extends BaseFormState {
   }
 }
 
+export function createEmptyFormState(): BaseFormState {
+  return {
+    errors: {
+      _form: [],
+    },
+  }
+}
+
 export function createEmptyEventFormState(): EventFormState {
   return {
     errors: {
