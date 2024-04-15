@@ -8,7 +8,7 @@ import { EventFormState } from '@/actions/event'
 import { EventCreateInput } from '@/back/models/Event'
 import { isEqual } from 'lodash'
 import Alert from '@/components/ui/alert'
-import { updateEvent } from '@/actions/event'
+import { updateEvent, createEmptyEventFormStateError } from '@/actions/event'
 
 interface EventFormProps {
   event: Event
@@ -92,18 +92,7 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
       endingAt: new Date(formData.get('endingAt') as string | Date),
     }
 
-    const formattedError: EventFormState = {
-      errors: {
-        name: [],
-        city: [],
-        number: [],
-        street: [],
-        zipCode: [],
-        startingAt: [],
-        endingAt: [],
-        _form: [],
-      },
-    }
+    const formattedError = await createEmptyEventFormStateError()
     const result = EventCreateInput.safeParse(data)
     if (!result.success) {
       formattedError.errors = {

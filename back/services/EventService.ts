@@ -18,4 +18,10 @@ export class EventService {
       data,
     })
   }
+
+  async delete(id: number) {
+    return await this._prisma.event.delete({
+      where: { id },
+    })
+  }
 }

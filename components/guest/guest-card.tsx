@@ -1,9 +1,8 @@
 'use client'
 
 import { Card, CardHeader, CardBody, CardFooter, Divider, Button, useDisclosure } from '@nextui-org/react'
-import GuestForm from "@/components/guest/guest-form";
+import GuestForm from '@/components/guest/guest-form'
 import { Guest, Event, EventGuest } from '@prisma/client'
-
 
 interface GuestCardProps {
   guest: Guest & {
@@ -13,7 +12,6 @@ interface GuestCardProps {
 
 export default function GuestCard({ guest }: GuestCardProps) {
   const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
-
 
   return (
     <>

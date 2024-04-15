@@ -6,8 +6,10 @@ import { FaLocationArrow } from 'react-icons/fa6'
 import { FaRegCalendarCheck } from 'react-icons/fa6'
 import { FaRegClock } from 'react-icons/fa6'
 import EventForm from '@/components/event/event-form'
+import DeleteModal from '@/components/ui/delete-modal'
 import { Event } from '@prisma/client'
 import { RoleCategories } from '@/utils/paths'
+import { deleteEvent } from '@/actions/event'
 
 interface EventCardProps {
   event: Event
@@ -15,7 +17,8 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   const session = useSession()
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
+  const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteOpenChange } = useDisclosure()
 
   const roleConditionalRendering = () => {
     if (session.data?.user.roleCategory === RoleCategories.Married) {
@@ -23,8 +26,11 @@ export default function EventCard({ event }: EventCardProps) {
         <>
           <Divider />
           <CardFooter className="flex flex-row justify-end">
-            <Button onClick={onOpen} variant="flat" color="warning">
+            <Button onClick={onEditModalOpen} variant="flat" color="warning" className="mx-2">
               Modifier
+            </Button>
+            <Button onClick={onDeleteModalOpen} variant="flat" color="danger">
+              Supprimer
             </Button>
           </CardFooter>
         </>
@@ -85,7 +91,16 @@ export default function EventCard({ event }: EventCardProps) {
         </CardFooter>
         {roleConditionalRendering()}
       </Card>
-      <EventForm event={event} onOpenChange={onOpenChange} isOpen={isOpen} />
+      <EventForm event={event} onOpenChange={onEditOpenChange} isOpen={isEditModalOpen} />
+
+      <DeleteModal
+        title="Supprimer un événement"
+        confirmationText={`Etes-vous certains de vouloir supprimer l'événement ${event.name} ?`}
+        isOpen={isDeleteModalOpen}
+        onOpenChange={onDeleteOpenChange}
+        deleteFn={deleteEvent}
+        modelInstance={event}
+      />
     </>
   )
 }

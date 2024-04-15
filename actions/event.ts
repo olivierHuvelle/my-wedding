@@ -21,17 +21,8 @@ export interface EventFormState extends BaseFormState {
   }
 }
 
-export async function getEvents() {
-  const session = await auth()
-  if (!session || !session.user) {
-    throw new Error('User should be identified')
-  }
-  const eventService = new EventService()
-  return await eventService.findAll()
-}
-
-export async function updateEvent(event: Event, formData: unknown): Promise<EventFormState> {
-  const res: EventFormState = {
+export async function createEmptyEventFormStateError(): Promise<EventFormState> {
+  return {
     errors: {
       name: [],
       city: [],
@@ -43,6 +34,19 @@ export async function updateEvent(event: Event, formData: unknown): Promise<Even
       _form: [],
     },
   }
+}
+
+export async function getEvents() {
+  const session = await auth()
+  if (!session || !session.user) {
+    throw new Error('User should be identified')
+  }
+  const eventService = new EventService()
+  return await eventService.findAll()
+}
+
+export async function updateEvent(event: Event, formData: unknown): Promise<EventFormState> {
+  const res = await createEmptyEventFormStateError()
   const session = await auth()
 
   if (!session || !session.user) {
@@ -100,5 +104,47 @@ export async function updateEvent(event: Event, formData: unknown): Promise<Even
 
   revalidatePath('/')
 
+  return res
+}
+
+export async function deleteEvent(event: Event): Promise<BaseFormState> {
+  const res: BaseFormState = {
+    errors: { _form: [] },
+  }
+
+  // [IMP] check id + session in external function + same for errorHandler
+  const session = await auth()
+
+  if (!session || !session.user) {
+    res.errors._form.push('Vous devez être identifié pour effectuer cette action')
+    return res
+  }
+  if (session.user.roleCategory !== RoleCategories.Married) {
+    res.errors._form.push('Vous n avez pas les permissions requises pour effecturer cette action')
+    return res
+  }
+
+  try {
+    const eventService = new EventService()
+    await eventService.delete(event.id)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return {
+        errors: {
+          ...res.errors,
+          _form: [err.message],
+        },
+      }
+    } else {
+      return {
+        errors: {
+          ...res.errors,
+          _form: ['Failed to delete the event'],
+        },
+      }
+    }
+  }
+  // [imp] possible ici
+  revalidatePath('/')
   return res
 }
