@@ -7,19 +7,7 @@ import { RoleCategories } from '@/utils/paths'
 import { EventCreateInput } from '@/back/models/Event'
 import { Event } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
-
-export interface EventFormState extends BaseFormState {
-  errors: {
-    name: string[]
-    city: string[]
-    number: string[]
-    street: string[]
-    zipCode: string[]
-    startingAt: string[]
-    endingAt: string[]
-    _form: string[]
-  }
-}
+import { EventFormState } from '@/actions/main'
 
 export async function createEmptyEventFormStateError(): Promise<EventFormState> {
   return {

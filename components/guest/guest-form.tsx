@@ -18,7 +18,7 @@ import {
 import { Event, EventGuest, Guest } from '@prisma/client'
 import { GuestCreateInput } from '@/back/models/Guest'
 import { isEqual } from 'lodash'
-import { GuestFormState } from '@/actions/guest'
+import { GuestFormState } from '@/actions/main'
 import Alert from '@/components/ui/alert'
 import { Menu } from '@prisma/client'
 
