@@ -95,7 +95,7 @@ export default function EventCard({ event }: EventCardProps) {
 
       <DeleteModal
         title="Supprimer un événement"
-        confirmationText={`Etes-vous certains de vouloir supprimer l'événement ${event.name} ?`}
+        confirmationText={`Etes-vous certain de vouloir supprimer l'événement ${event.name} ?`}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteOpenChange}
         deleteFn={deleteEvent}

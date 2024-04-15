@@ -2,7 +2,9 @@
 
 import { Card, CardHeader, CardBody, CardFooter, Divider, Button, useDisclosure } from '@nextui-org/react'
 import GuestForm from '@/components/guest/guest-form'
+import DeleteModal from '@/components/ui/delete-modal'
 import { Guest, Event, EventGuest } from '@prisma/client'
+import { deleteGuest } from '@/actions/guest'
 
 interface GuestCardProps {
   guest: Guest & {
@@ -12,6 +14,7 @@ interface GuestCardProps {
 
 export default function GuestCard({ guest }: GuestCardProps) {
   const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
+  const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteOpenChange } = useDisclosure()
 
   return (
     <>
@@ -41,16 +44,24 @@ export default function GuestCard({ guest }: GuestCardProps) {
         <Divider />
         <CardFooter>
           <div className="flex w-full flex-row justify-end">
-            <Button variant="flat" color="warning" className="mx-2" onClick={onEditModalOpen}>
+            <Button onClick={onEditModalOpen} variant="flat" color="warning" className="mx-2">
               Modifier
             </Button>
-            <Button variant="flat" color="danger">
+            <Button onClick={onDeleteModalOpen} variant="flat" color="danger">
               Supprimer
             </Button>
           </div>
         </CardFooter>
       </Card>
       <GuestForm guest={guest} isOpen={isEditModalOpen} onOpenChange={onEditOpenChange} userId={guest.userId} />
+      <DeleteModal
+        title="Supprimer un invité"
+        confirmationText={`Etes-vous certain de vouloir supprimer l'invité ${guest.firstName} ${guest.lastName ?? ''}`}
+        isOpen={isDeleteModalOpen}
+        onOpenChange={onDeleteOpenChange}
+        deleteFn={deleteGuest}
+        modelInstance={guest}
+      />
     </>
   )
 }

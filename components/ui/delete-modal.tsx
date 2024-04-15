@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Modal, ModalHeader, ModalFooter, ModalContent, ModalBody, Button } from '@nextui-org/react'
 import Alert from '@/components/ui/alert'
-import { BaseFormState } from '@/actions/main'
+import { BaseFormState, createEmptyFormState } from '@/actions/main'
 
 interface DeleteModalFormProps<T> {
   title: string
@@ -23,9 +23,7 @@ export default function DeleteModal<T>({
   deleteFn,
   modelInstance,
 }: DeleteModalFormProps<T>) {
-  const [error, setError] = useState<BaseFormState>({
-    errors: { _form: [] },
-  })
+  const [error, setError] = useState<BaseFormState>(createEmptyFormState())
 
   const submitHandler = async () => {
     const response = await deleteFn(modelInstance)
