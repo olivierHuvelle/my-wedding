@@ -2,7 +2,7 @@ import { Session } from 'next-auth'
 import { RoleCategories } from '@/utils/paths'
 
 export class UnauthenticatedError extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     const errorMessage = message && message.trim().length > 0 ? message : 'Unauthenticated'
     super(errorMessage)
     this.name = 'UnauthenticatedError'
@@ -10,7 +10,7 @@ export class UnauthenticatedError extends Error {
 }
 
 export class PermissionDenied extends Error {
-  constructor(message: string) {
+  constructor(message?: string) {
     const errorMessage = message && message.trim().length > 0 ? message : 'Permission denied'
     super(errorMessage)
     this.name = 'PermissionDenied'
