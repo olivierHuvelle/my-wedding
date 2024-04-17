@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+
 import {
   Navbar,
   NavbarBrand,
@@ -16,12 +17,24 @@ import {
 import TheLogo from '@/components/layout/the-logo'
 import LogoutForm from '@/components/authentication/logout-form'
 import paths from '@/utils/paths'
+import { RoleCategories } from '@/utils/paths'
 
 export default function TheHeader() {
   const pathName = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const isLoginPage = pathName === paths.login.url
   const session = useSession()
+
+  const userPaths = Object.values(paths)
+    // @ts-expect-error Quick and dirty fix
+    .filter(
+      (value) =>
+        value.isAuthenticated && value.roleCategories.includes(session.data?.user.roleCategory ?? RoleCategories.Guest),
+    )
+    .map((value) => ({
+      url: value.url,
+      text: value.text,
+    }))
 
   const logInConditionalRendering = () => {
     if (session.status === 'authenticated') {
@@ -34,19 +47,6 @@ export default function TheHeader() {
     )
   }
 
-  const menuItems = [
-    'Profile',
-    'Dashboard',
-    'Activity',
-    'Analytics',
-    'System',
-    'Deployments',
-    'My Settings',
-    'Team Settings',
-    'Help & Feedback',
-    'Log Out',
-  ]
-
   return (
     <Navbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent>
@@ -58,33 +58,30 @@ export default function TheHeader() {
       </NavbarContent>
 
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
-        </NavbarItem>
+        {userPaths.map((userPath) => (
+          <NavbarItem key={`${userPath.url}`}>
+            <Link
+              color={pathName === userPath.url ? 'primary' : 'foreground'}
+              className="w-full"
+              href={userPath.url}
+              size="lg"
+            >
+              {userPath.text}
+            </Link>
+          </NavbarItem>
+        ))}
       </NavbarContent>
       <NavbarContent justify="end">{logInConditionalRendering()}</NavbarContent>
       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
+        {userPaths.map((userPath) => (
+          <NavbarMenuItem key={`${userPath.url}`}>
             <Link
-              color={index === 2 ? 'primary' : index === menuItems.length - 1 ? 'danger' : 'foreground'}
+              color={pathName === userPath.url ? 'primary' : 'foreground'}
               className="w-full"
-              href="#"
+              href={userPath.url}
               size="lg"
             >
-              {item}
+              {userPath.text}
             </Link>
           </NavbarMenuItem>
         ))}

@@ -41,7 +41,7 @@ export const options: NextAuthOptions = {
     },
     session: async ({ session, token }) => {
       if (token?.user) {
-        session.user = token.user as Session['user']
+        session.user = token.user as unknown as Session['user']
       }
       return session
     },
