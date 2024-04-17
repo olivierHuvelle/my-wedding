@@ -5,7 +5,7 @@ import { RoleCategories } from '@/utils/paths'
 import { GuestService } from '@/back/services/GuestService'
 import { isAuthenticated, PermissionDenied, UnauthenticatedError } from '@/actions/authentication'
 import { Guest } from '@prisma/client'
-import { BaseFormState, createEmptyFormState, createEmptyGuestFormState } from '@/actions/main'
+import { BaseFormState, createEmptyFormState, createEmptyGuestFormState, GuestFormState } from '@/actions/main'
 import { revalidatePath } from 'next/cache'
 import { GuestCreateInput } from '@/back/models/Guest'
 
@@ -42,7 +42,7 @@ export async function deleteGuest(guest: Guest): Promise<BaseFormState> {
   }
 }
 
-export async function updateGuest(guest: Guest, formData: unknown, eventIds: number[]) {
+export async function updateGuest(guest: Guest, formData: unknown, eventIds: number[]): Promise<GuestFormState> {
   const res = createEmptyGuestFormState()
   try {
     await checkGuestPermissions(guest.userId)
@@ -64,7 +64,35 @@ export async function updateGuest(guest: Guest, formData: unknown, eventIds: num
       res.errors._form.push(err.message)
       return res
     } else {
-      res.errors._form.push("Erreur lors de la mise à jour de l'événement, veuillez réessayer plus tard")
+      res.errors._form.push("Erreur lors de la mise à jour de l'invité, veuillez réessayer plus tard")
+      return res
+    }
+  }
+}
+
+export async function createGuest(userId: number, formData: unknown, eventIds: number[]) {
+  const res = createEmptyGuestFormState()
+  try {
+    await checkGuestPermissions(userId)
+    const result = GuestCreateInput.safeParse(formData)
+    if (!result.success) {
+      return {
+        errors: {
+          ...res.errors,
+          ...result.error.flatten().fieldErrors,
+        },
+      }
+    }
+    const guestService = new GuestService()
+    await guestService.create(userId, eventIds, result.data)
+    revalidatePath('/')
+    return res
+  } catch (err) {
+    if (err instanceof UnauthenticatedError || err instanceof PermissionDenied || err instanceof Error) {
+      res.errors._form.push(err.message)
+      return res
+    } else {
+      res.errors._form.push("Erreur lors de la création de l'invité, veuillez réessayer plus tard")
       return res
     }
   }

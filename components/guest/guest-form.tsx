@@ -18,12 +18,14 @@ import {
 import { Event, EventGuest, Guest, Menu } from '@prisma/client'
 import { GuestCreateInput } from '@/back/models/Guest'
 import Alert from '@/components/ui/alert'
-import { updateGuest } from '@/actions/guest'
+import { createGuest, updateGuest } from '@/actions/guest'
 
 interface GuestFormProps {
-  guest: Guest & {
-    events: (EventGuest & { event: Event })[]
-  }
+  guest?:
+    | (Guest & {
+        events: (EventGuest & { event: Event })[]
+      })
+    | undefined
   events: Event[]
   isOpen: boolean
   onOpenChange: () => void
@@ -33,25 +35,25 @@ interface GuestFormProps {
 export default function GuestForm({ isOpen, onOpenChange, userId, guest, events }: GuestFormProps) {
   const formRef = useRef<HTMLFormElement>(null)
   const [formErrors, setFormErrors] = useState<string[]>([])
-  const firstName = useInput(GuestCreateInput.pick({ firstName: true }), 'firstName', guest.firstName)
-  const lastName = useInput(GuestCreateInput.pick({ lastName: true }), 'lastName', guest.lastName ?? '')
+  const firstName = useInput(GuestCreateInput.pick({ firstName: true }), 'firstName', guest?.firstName ?? '')
+  const lastName = useInput(GuestCreateInput.pick({ lastName: true }), 'lastName', guest?.lastName ?? '')
   const foodProhibitions = useInput(
     GuestCreateInput.pick({ foodProhibitions: true }),
     'foodProhibitions',
-    guest.foodProhibitions ?? '',
+    guest?.foodProhibitions ?? '',
   )
-  const remark = useInput(GuestCreateInput.pick({ remark: true }), 'remark', guest.remark ?? '')
-  const phone = useInput(GuestCreateInput.pick({ phone: true }), 'phone', guest.phone ?? '')
-  const city = useInput(GuestCreateInput.pick({ city: true }), 'city', guest.city)
-  const number = useInput(GuestCreateInput.pick({ number: true }), 'number', guest.number)
-  const street = useInput(GuestCreateInput.pick({ street: true }), 'street', guest.street)
-  const zipCode = useInput(GuestCreateInput.pick({ zipCode: true }), 'zipCode', guest.zipCode)
-  const [menuValue, setMenuValue] = useState<Menu>(guest.menu)
-  const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest.age ? `${guest.age}` : '', (value) =>
+  const remark = useInput(GuestCreateInput.pick({ remark: true }), 'remark', guest?.remark ?? '')
+  const phone = useInput(GuestCreateInput.pick({ phone: true }), 'phone', guest?.phone ?? '')
+  const city = useInput(GuestCreateInput.pick({ city: true }), 'city', guest?.city)
+  const number = useInput(GuestCreateInput.pick({ number: true }), 'number', guest?.number)
+  const street = useInput(GuestCreateInput.pick({ street: true }), 'street', guest?.street)
+  const zipCode = useInput(GuestCreateInput.pick({ zipCode: true }), 'zipCode', guest?.zipCode)
+  const [menuValue, setMenuValue] = useState<Menu>(guest?.menu ? guest.menu : Menu.Adult)
+  const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest?.age ? `${guest?.age}` : '', (value) =>
     parseInt(value),
   )
-  const [isChild, setIsChild] = useState(guest.isChild)
-  const [selectedEvents, setSelectedEvents] = useState(new Set(guest.events.map((event) => `${event.eventId}`)))
+  const [isChild, setIsChild] = useState(guest?.isChild)
+  const [selectedEvents, setSelectedEvents] = useState(new Set(guest?.events.map((event) => `${event.eventId}`)))
 
   const inputs = useMemo(
     () => [firstName, lastName, foodProhibitions, remark, phone, city, number, street, zipCode, age],
@@ -88,7 +90,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
       number: formData.get('number'),
       street: formData.get('street'),
       zipCode: formData.get('zipCode'),
-      age: formData.get('age'),
+      age: formData.get('age') ? Number(formData.get('age')) : formData.get('age'),
       isChild,
       menu: menuValue,
       events: selectedEvents,
@@ -109,7 +111,9 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
       return
     }
 
-    const response = await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
+    const response = guest
+      ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
+      : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
 
     let hasResponseError = false
     const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
@@ -139,7 +143,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">Modifier un invité</ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">{`${guest ? 'Modifier' : 'Ajouter'}`} un invité</ModalHeader>
             <ModalBody>
               <form action={submitHandler} ref={formRef}>
                 <Input
@@ -151,6 +155,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={firstName.inputHandler}
                   isInvalid={firstName.hasError}
                   errorMessage={firstName.errors}
+                  onBlur={firstName.blurHandler}
                 />
                 <Input
                   name="lastName"
@@ -160,6 +165,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={lastName.inputHandler}
                   isInvalid={lastName.hasError}
                   errorMessage={lastName.errors}
+                  onBlur={lastName.blurHandler}
                 />
 
                 <Select
@@ -187,6 +193,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={phone.inputHandler}
                   isInvalid={phone.hasError}
                   errorMessage={phone.errors}
+                  onBlur={phone.blurHandler}
                 />
                 <Input
                   name="city"
@@ -197,6 +204,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={city.inputHandler}
                   isInvalid={city.hasError}
                   errorMessage={city.errors}
+                  onBlur={city.blurHandler}
                 />
                 <Input
                   name="number"
@@ -217,6 +225,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={street.inputHandler}
                   isInvalid={street.hasError}
                   errorMessage={street.errors}
+                  onBlur={street.blurHandler}
                 />
                 <Input
                   name="zipCode"
@@ -227,6 +236,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={zipCode.inputHandler}
                   isInvalid={zipCode.hasError}
                   errorMessage={zipCode.errors}
+                  onBlur={zipCode.blurHandler}
                 />
                 <Textarea
                   name="remark"
@@ -236,6 +246,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={remark.inputHandler}
                   isInvalid={remark.hasError}
                   errorMessage={remark.errors}
+                  onBlur={remark.blurHandler}
                 />
                 <Textarea
                   name="foodProhibitions"
@@ -245,6 +256,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                   onInput={foodProhibitions.inputHandler}
                   isInvalid={foodProhibitions.hasError}
                   errorMessage={foodProhibitions.errors}
+                  onBlur={foodProhibitions.blurHandler}
                 />
                 <Checkbox isSelected={isChild} onChange={isChildOnchangeHandler} className="my-2" name="isChild">
                   Enfant ?
@@ -260,6 +272,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
                       onInput={age.inputHandler}
                       isInvalid={age.hasError}
                       errorMessage={age.errors}
+                      onBlur={age.blurHandler}
                     />
 
                     <Select

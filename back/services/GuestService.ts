@@ -1,5 +1,6 @@
 import prisma from '@/back/database/db'
 import { Prisma } from '@prisma/client'
+import GuestCreateInput = Prisma.GuestCreateInput
 
 export class GuestService {
   protected _prisma = prisma
@@ -74,6 +75,51 @@ export class GuestService {
       })
     } catch (err) {
       throw new Error("Erreur lors de la mise à jour de l'invité")
+    }
+  }
+
+  async create(userId: number, eventIds: number[], data: GuestCreateInput) {
+    const user = await this._prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })
+    if (!user) {
+      throw new Error(`L'utilisateur avec l'ID ${userId} n'existe pas`)
+    }
+
+    const existingEvents = await this._prisma.event.findMany({
+      where: {
+        id: {
+          in: eventIds,
+        },
+      },
+    })
+
+    const missingEventIds = eventIds.filter((eventId) => !existingEvents.some((event) => event.id === eventId))
+
+    if (missingEventIds.length > 0) {
+      throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
+    }
+
+    try {
+      const guest = await this._prisma.guest.create({
+        data: {
+          ...data,
+          userId,
+        },
+      })
+
+      return await this._prisma.guest.update({
+        where: { id: guest.id },
+        data: {
+          events: {
+            connect: eventIds.map((eventId) => ({ eventId_guestId: { eventId, guestId: guest.id } })),
+          },
+        },
+      })
+    } catch (err) {
+      throw new Error("Erreur lors de la création de l'invité")
     }
   }
 }
