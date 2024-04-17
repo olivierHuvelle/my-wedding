@@ -14,7 +14,12 @@ interface GuestCardProps {
 }
 
 export default function GuestCard({ guest, events }: GuestCardProps) {
-  const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onOpenChange: onEditOpenChange,
+    onClose: onEditClose,
+  } = useDisclosure()
   const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteOpenChange } = useDisclosure()
 
   return (
@@ -58,6 +63,7 @@ export default function GuestCard({ guest, events }: GuestCardProps) {
         guest={guest}
         isOpen={isEditModalOpen}
         onOpenChange={onEditOpenChange}
+        onClose={onEditClose}
         userId={guest.userId}
         events={events}
       />

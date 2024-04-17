@@ -29,10 +29,11 @@ interface GuestFormProps {
   events: Event[]
   isOpen: boolean
   onOpenChange: () => void
+  onClose: () => void
   userId: number
 }
 
-export default function GuestForm({ isOpen, onOpenChange, userId, guest, events }: GuestFormProps) {
+export default function GuestForm({ isOpen, onOpenChange, userId, guest, events, onClose }: GuestFormProps) {
   const formRef = useRef<HTMLFormElement>(null)
   const [formErrors, setFormErrors] = useState<string[]>([])
   const firstName = useInput(GuestCreateInput.pick({ firstName: true }), 'firstName', guest?.firstName ?? '')
@@ -52,13 +53,14 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
   const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest?.age ? `${guest?.age}` : '', (value) =>
     parseInt(value),
   )
-  const [isChild, setIsChild] = useState(guest?.isChild)
+  const [isChild, setIsChild] = useState(guest?.isChild ? guest.isChild : false)
   const [selectedEvents, setSelectedEvents] = useState(new Set(guest?.events.map((event) => `${event.eventId}`)))
 
   const inputs = useMemo(
     () => [firstName, lastName, foodProhibitions, remark, phone, city, number, street, zipCode, age],
     [firstName, lastName, foodProhibitions, remark, phone, city, number, street, zipCode, age],
   )
+
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
   const isChildOnchangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +79,14 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
 
   const eventChangeHandler = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedEvents(new Set(e.target.value.split(',')))
+  }
+
+  const onCloseHandler = () => {
+    inputs.forEach((input) => input.reset())
+    setMenuValue(guest?.menu ? guest.menu : Menu.Adult)
+    setIsChild(guest?.isChild ? guest.isChild : false)
+    setSelectedEvents(new Set(guest?.events.map((event) => `${event.eventId}`)))
+    onClose()
   }
 
   const submitHandler = async (formData: FormData) => {
@@ -139,7 +149,14 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events 
   }
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} size="xl" scrollBehavior="inside">
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      isDismissable={false}
+      size="xl"
+      scrollBehavior="inside"
+      onClose={onCloseHandler}
+    >
       <ModalContent>
         {(onClose) => (
           <>

@@ -10,7 +10,7 @@ interface GuestTitleProps {
 }
 
 export default function GuestTitle({ userId, events }: GuestTitleProps) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   return (
     <>
@@ -20,7 +20,7 @@ export default function GuestTitle({ userId, events }: GuestTitleProps) {
           <IoAddCircleOutline className="text-2xl" />
         </Button>
       </h2>
-      <GuestForm events={events} isOpen={isOpen} onOpenChange={onOpenChange} userId={userId} />
+      <GuestForm events={events} userId={userId} isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose} />
     </>
   )
 }

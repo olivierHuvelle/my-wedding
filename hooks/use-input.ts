@@ -41,6 +41,7 @@ const useInput = (
 
   const reset = () => {
     setEnteredValue(defaultValue)
+    setServerErrors([])
     setHadFocus(false)
   }
 
