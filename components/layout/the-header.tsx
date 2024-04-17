@@ -26,9 +26,9 @@ export default function TheHeader() {
   const session = useSession()
 
   const userPaths = Object.values(paths)
-    // @ts-expect-error Quick and dirty fix
     .filter(
       (value) =>
+        // @ts-expect-error Quick and dirty fix
         value.isAuthenticated && value.roleCategories.includes(session.data?.user.roleCategory ?? RoleCategories.Guest),
     )
     .map((value) => ({
