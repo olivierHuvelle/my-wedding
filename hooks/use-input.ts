@@ -1,7 +1,9 @@
 import { ChangeEvent, useState } from 'react'
 import { ZodSchema } from 'zod'
 
+// eslint-disable-next-line no-unused-vars
 type BeforeValidationFunction = (value: string) => unknown
+// eslint-disable-next-line no-unused-vars
 type AfterValidationFunction = (value: unknown) => string
 
 const useInput = (
@@ -9,18 +11,22 @@ const useInput = (
   schemaKey: string,
   defaultValue = '',
   beforeValidationFn?: BeforeValidationFunction,
-  afterValidation?: AfterValidationFunction,
+  afterValidationFn?: AfterValidationFunction,
 ) => {
   const [enteredValue, setEnteredValue] = useState(defaultValue)
   const [hadFocus, setHadFocus] = useState(!!enteredValue)
-  let errors: string[] = []
+  const [serverErrors, setServerErrors] = useState<string[]>([])
+
+  let errors: string[] = [...serverErrors]
   let isValueValid = false
   const result = schema.safeParse({ [schemaKey]: beforeValidationFn ? beforeValidationFn(enteredValue) : enteredValue })
 
   if (result.success) {
-    isValueValid = true
+    if (errors.length === 0) {
+      isValueValid = true
+    }
   } else {
-    errors = result.error.errors.map((issue) => issue.message)
+    errors = [...errors, ...result.error.errors.map((issue) => issue.message)]
   }
 
   const hasError = !isValueValid && hadFocus
@@ -40,14 +46,14 @@ const useInput = (
 
   return {
     name: schemaKey,
-    value: afterValidation ? afterValidation(enteredValue) : enteredValue,
-    isValid: isValueValid,
-    hadFocus,
+    value: afterValidationFn ? afterValidationFn(enteredValue) : enteredValue,
+    errors: hasError ? errors : [],
     hasError,
-    errors,
     inputHandler,
     blurHandler,
     reset,
+    setServerErrors,
+    setEnteredValue,
   }
 }
 

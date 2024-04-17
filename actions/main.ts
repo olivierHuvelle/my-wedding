@@ -4,14 +4,6 @@ export interface BaseFormState {
   }
 }
 
-export interface LoginFormState extends BaseFormState {
-  errors: {
-    email: string[]
-    password: string[]
-    _form: string[]
-  }
-}
-
 export interface EventFormState extends BaseFormState {
   errors: {
     name: string[]
@@ -38,6 +30,7 @@ export interface GuestFormState extends BaseFormState {
     city: string[]
     remark: string[]
     street: string[]
+    age: string[]
     _form: string[]
   }
 }
@@ -65,11 +58,21 @@ export function createEmptyEventFormState(): EventFormState {
   }
 }
 
-export function createEmptyLoginFormState(): LoginFormState {
+export function createEmptyGuestFormState(): GuestFormState {
   return {
     errors: {
-      email: [],
-      password: [],
+      firstName: [],
+      lastName: [],
+      isChild: [],
+      foodProhibitions: [],
+      menu: [],
+      zipCode: [],
+      number: [],
+      phone: [],
+      city: [],
+      remark: [],
+      street: [],
+      age: [],
       _form: [],
     },
   }

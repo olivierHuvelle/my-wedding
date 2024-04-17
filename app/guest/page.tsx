@@ -4,7 +4,6 @@ import GuestList from '@/components/guest/guest-list'
 
 export default async function GuestPage() {
   const session = await auth()
-
   return (
     <div>
       <EventList />

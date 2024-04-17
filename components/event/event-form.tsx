@@ -1,15 +1,12 @@
 'use client'
 
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import useInput from '@/hooks/use-input'
-import { Modal, ModalHeader, ModalFooter, ModalContent, ModalBody, Button, Input } from '@nextui-org/react'
 import { Event } from '@prisma/client'
-import { EventFormState } from '@/actions/main'
 import { EventCreateInput } from '@/back/models/Event'
-import { isEqual } from 'lodash'
-import Alert from '@/components/ui/alert'
 import { updateEvent } from '@/actions/event'
-import { createEmptyEventFormState } from '@/actions/main'
+import { Modal, ModalHeader, ModalFooter, ModalContent, ModalBody, Button, Input } from '@nextui-org/react'
+import Alert from '@/components/ui/alert'
 
 interface EventFormProps {
   event: Event
@@ -18,8 +15,8 @@ interface EventFormProps {
 }
 
 export default function EventForm({ event, isOpen, onOpenChange }: EventFormProps) {
-  const [error, setError] = useState<EventFormState>(createEmptyEventFormState())
   const formRef = useRef<HTMLFormElement>(null)
+  const [formErrors, setFormErrors] = useState<string[]>([])
   const name = useInput(EventCreateInput.pick({ name: true }), 'name', event.name)
   const city = useInput(EventCreateInput.pick({ city: true }), 'city', event.city)
   const number = useInput(EventCreateInput.pick({ number: true }), 'number', event.number)
@@ -37,39 +34,13 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
     event.endingAt.toISOString().slice(0, 16).replace('T', ' '),
     (value) => new Date(value),
   )
+
   const inputs = useMemo(
     () => [name, city, number, street, zipCode, startingAt, endingAt],
     [name, city, number, street, zipCode, startingAt, endingAt],
   )
-  const isConfirmButtonDisabled = !inputs.every((input) => input.isValid)
 
-  useEffect(() => {
-    inputs.forEach((input) => {
-      if (input.hasError && !isEqual(error.errors[input.name as keyof EventFormState['errors']], input.errors)) {
-        setError((prevState) => {
-          const newError = { ...prevState }
-          newError.errors[input.name as keyof EventFormState['errors']] = input.errors
-          return newError
-        })
-      } else if (!input.hasError && error.errors[input.name as keyof EventFormState['errors']].length) {
-        setError((prevState) => {
-          const newError = { ...prevState }
-
-          if (
-            isEqual(
-              error.errors[input.name as keyof EventFormState['errors']],
-              prevState.errors[input.name as keyof EventFormState['errors']],
-            )
-          ) {
-            return prevState
-          } else {
-            newError.errors[input.name as keyof EventFormState['errors']] = []
-            return newError
-          }
-        })
-      }
-    })
-  }, [inputs, error])
+  const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
   const submitHandler = async (formData: FormData) => {
     const data = {
@@ -81,27 +52,41 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
       startingAt: new Date(formData.get('startingAt') as string | Date),
       endingAt: new Date(formData.get('endingAt') as string | Date),
     }
-    const formattedError = createEmptyEventFormState()
     const result = EventCreateInput.safeParse(data)
+
     if (!result.success) {
-      formattedError.errors = {
-        ...formattedError.errors,
-        ...result.error.flatten().fieldErrors,
+      const errors = result.error.flatten().fieldErrors
+      const keys = Object.keys(errors) as (keyof typeof errors)[]
+      for (const key of keys) {
+        const input = inputs.find((input) => input.name === key)
+        if (input) {
+          input.setServerErrors(errors[key]!)
+        }
       }
-      setError(formattedError)
       return
     }
 
     const response = await updateEvent(event, result.data)
 
-    setError((prevError) => ({
-      ...prevError,
-      errors: { ...response.errors },
-    }))
+    let hasResponseError = false
+    const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
+    for (const key of keys) {
+      const input = inputs.find((input) => input.name === key)
+      if (input && response.errors[key].length) {
+        input.setServerErrors(response.errors[key])
+        hasResponseError = true
+      }
+    }
+    if (response.errors._form.length) {
+      setFormErrors(response.errors._form)
+      hasResponseError = true
+    }
 
-    const hasErrors = Object.values(response.errors).some((errorArray) => errorArray.length > 0)
-
-    if (!hasErrors) {
+    if (!hasResponseError) {
+      inputs.forEach((input) => {
+        input.setServerErrors([])
+      })
+      setFormErrors([])
       onOpenChange()
     }
   }
@@ -121,8 +106,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   isRequired={true}
                   value={name.value}
                   onInput={name.inputHandler}
-                  isInvalid={!!error.errors.name.length}
-                  errorMessage={error.errors.name}
+                  isInvalid={name.hasError}
+                  errorMessage={name.errors}
                 />
                 <Input
                   name="city"
@@ -131,8 +116,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   isRequired={true}
                   value={city.value}
                   onInput={city.inputHandler}
-                  isInvalid={!!error.errors.city.length}
-                  errorMessage={error.errors.city}
+                  isInvalid={city.hasError}
+                  errorMessage={city.errors}
                 />
                 <Input
                   name="number"
@@ -141,8 +126,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   isRequired={true}
                   value={number.value}
                   onInput={number.inputHandler}
-                  isInvalid={!!error.errors.number.length}
-                  errorMessage={error.errors.number}
+                  isInvalid={number.hasError}
+                  errorMessage={number.errors}
                 />
                 <Input
                   name="street"
@@ -151,8 +136,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   isRequired={true}
                   value={street.value}
                   onInput={street.inputHandler}
-                  isInvalid={!!error.errors.street.length}
-                  errorMessage={error.errors.street}
+                  isInvalid={street.hasError}
+                  errorMessage={street.errors}
                 />
                 <Input
                   name="zipCode"
@@ -161,8 +146,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   isRequired={true}
                   value={zipCode.value}
                   onInput={zipCode.inputHandler}
-                  isInvalid={!!error.errors.zipCode.length}
-                  errorMessage={error.errors.zipCode}
+                  isInvalid={zipCode.hasError}
+                  errorMessage={zipCode.errors}
                 />
                 <Input
                   name="startingAt"
@@ -174,8 +159,8 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   }}
                   value={startingAt.value}
                   onInput={startingAt.inputHandler}
-                  isInvalid={!!error.errors.startingAt.length}
-                  errorMessage={error.errors.startingAt}
+                  isInvalid={startingAt.hasError}
+                  errorMessage={startingAt.errors}
                 />
                 <Input
                   name="endingAt"
@@ -187,16 +172,11 @@ export default function EventForm({ event, isOpen, onOpenChange }: EventFormProp
                   }}
                   value={endingAt.value}
                   onInput={endingAt.inputHandler}
-                  isInvalid={!!error.errors.endingAt.length}
-                  errorMessage={error.errors.endingAt}
+                  isInvalid={endingAt.hasError}
+                  errorMessage={endingAt.errors}
                 />
-                {!!error.errors._form.length && (
-                  <Alert
-                    title="Une erreur s'est produite"
-                    content={error.errors._form}
-                    variant="danger"
-                    className="mb-2"
-                  />
+                {!!formErrors.length && (
+                  <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
                 )}
               </form>
             </ModalBody>

@@ -10,9 +10,10 @@ interface GuestCardProps {
   guest: Guest & {
     events: (EventGuest & { event: Event })[]
   }
+  events: Event[]
 }
 
-export default function GuestCard({ guest }: GuestCardProps) {
+export default function GuestCard({ guest, events }: GuestCardProps) {
   const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditOpenChange } = useDisclosure()
   const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteOpenChange } = useDisclosure()
 
@@ -53,7 +54,13 @@ export default function GuestCard({ guest }: GuestCardProps) {
           </div>
         </CardFooter>
       </Card>
-      <GuestForm guest={guest} isOpen={isEditModalOpen} onOpenChange={onEditOpenChange} userId={guest.userId} />
+      <GuestForm
+        guest={guest}
+        isOpen={isEditModalOpen}
+        onOpenChange={onEditOpenChange}
+        userId={guest.userId}
+        events={events}
+      />
       <DeleteModal
         title="Supprimer un invité"
         confirmationText={`Etes-vous certain de vouloir supprimer l'invité ${guest.firstName} ${guest.lastName ?? ''}`}

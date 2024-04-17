@@ -1,5 +1,6 @@
 import { getEvents } from '@/actions/event'
 import EventCard from '@/components/event/event-card'
+
 export default async function EventList() {
   const events = await getEvents()
   return (

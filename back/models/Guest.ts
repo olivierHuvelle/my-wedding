@@ -12,14 +12,18 @@ export const GuestCreateInput = z.object({
     .string()
     .trim()
     .min(3, { message: 'le nom doit contenir minimum 3 caractères' })
-    .max(255, { message: 'le nom doit contenir au plus 255 caractères' }),
+    .max(255, { message: 'le nom doit contenir au plus 255 caractères' })
+    .nullable()
+    .optional(),
   isChild: z.boolean(),
   foodProhibitions: z
     .string()
     .trim()
-    .max(255, { message: 'les interdits alimentaires doivent contenir au plus 255 caractères' }),
+    .max(255, { message: 'les interdits alimentaires doivent contenir au plus 255 caractères' })
+    .nullable()
+    .optional(),
   menu: z.enum([Menu.Adult, Menu.Child, Menu.None]),
-  remark: z.string().optional(),
+  remark: z.string().trim().max(255, { message: 'la remarque doit contenir au plus 255 caractères' }).optional(),
   zipCode: z
     .string()
     .trim()
@@ -40,5 +44,6 @@ export const GuestCreateInput = z.object({
     .trim()
     .min(1, { message: 'la ville doit contenir au minimum 1 caractère' })
     .max(255, { message: 'la ville doit contenir au plus 255 caractères' }),
-  phone: z.string().optional(),
+  phone: z.string().nullable().optional(),
+  age: z.number().int().min(1, { message: "l'âge doit être un entier strictement positif" }).nullable().optional(),
 }) satisfies z.Schema<Prisma.GuestUncheckedCreateInput>

@@ -1,56 +1,26 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
-import { LoginFormState } from '@/actions/main'
 import { loginSchema } from '@/back/models/User'
-import { createEmptyLoginFormState } from '@/actions/main'
 import { Input, Button } from '@nextui-org/react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
-import { isEqual } from 'lodash'
-import paths from '@/utils/paths'
+import paths, { RoleCategories } from '@/utils/paths'
 
 export default function LoginForm() {
-  const [error, setError] = useState<LoginFormState>(createEmptyLoginFormState)
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [formErrors, setFormErrors] = useState<string[]>([])
   const email = useInput(loginSchema.pick({ email: true }), 'email')
   const password = useInput(loginSchema.pick({ password: true }), 'password')
   const inputs = useMemo(() => [email, password], [email, password])
-  const isConfirmButtonDisabled = !inputs.every((input) => input.isValid)
+  const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
   const router = useRouter()
   const session = useSession()
-
-  useEffect(() => {
-    inputs.forEach((input) => {
-      if (input.hasError && !isEqual(error.errors[input.name as keyof LoginFormState['errors']], input.errors)) {
-        setError((prevState) => {
-          const newError = { ...prevState }
-          newError.errors[input.name as keyof LoginFormState['errors']] = input.errors
-          return newError
-        })
-      } else if (!input.hasError && error.errors[input.name as keyof LoginFormState['errors']].length) {
-        setError((prevState) => {
-          const newError = { ...prevState }
-          if (
-            isEqual(
-              error.errors[input.name as keyof LoginFormState['errors']],
-              prevState.errors[input.name as keyof LoginFormState['errors']],
-            )
-          ) {
-            return prevState
-          } else {
-            newError.errors[input.name as keyof LoginFormState['errors']] = []
-            return newError
-          }
-        })
-      }
-    })
-  }, [inputs, error])
 
   const toggleVisibilityHandler = () => {
     setIsPasswordVisible(!isPasswordVisible)
@@ -61,16 +31,18 @@ export default function LoginForm() {
       email: formData.get('email'),
       password: formData.get('password'),
     })
-    const formattedError = createEmptyLoginFormState()
+
     if (!result.success) {
-      formattedError.errors = {
-        ...formattedError.errors,
-        ...result.error.flatten().fieldErrors,
+      const errors = result.error.flatten().fieldErrors
+      const keys = Object.keys(errors) as (keyof typeof errors)[]
+      for (const key of keys) {
+        const input = inputs.find((input) => input.name === key)
+        if (input) {
+          input.setServerErrors(errors[key]!)
+        }
       }
-      setError(formattedError)
       return
     }
-    setError(formattedError)
 
     const response = await signIn('credentials', {
       email: result.data.email,
@@ -79,15 +51,13 @@ export default function LoginForm() {
     })
 
     if (response?.error) {
-      formattedError.errors._form =
-        response.error === 'CredentialsSignin' ? ['Identifiants invalides'] : ["Une erreur s'est produite"]
-      setError(formattedError)
+      const errorMessage =
+        response.error === 'CredentialsSignin' ? 'Identifiants invalides' : "Une erreur s'est produite"
+      setFormErrors([errorMessage])
     } else {
-      if (session.data?.user?.roleCategory === 'Marié') {
-        router.push(paths.married.url)
-      } else {
-        router.push(paths.guest.url)
-      }
+      setFormErrors([])
+      const url = session.data?.user?.roleCategory === RoleCategories.Married ? paths.married.url : paths.guest.url
+      router.push(url)
       router.refresh()
     }
   }
@@ -102,8 +72,8 @@ export default function LoginForm() {
         value={email.value}
         onInput={email.inputHandler}
         onBlur={email.blurHandler}
-        isInvalid={!!error.errors.email.length}
-        errorMessage={error.errors.email}
+        isInvalid={email.hasError}
+        errorMessage={email.errors}
         autoComplete="on"
       />
       <Input
@@ -115,8 +85,8 @@ export default function LoginForm() {
         type={isPasswordVisible ? 'text' : 'password'}
         onInput={password.inputHandler}
         onBlur={password.blurHandler}
-        isInvalid={!!error.errors.password.length}
-        errorMessage={error.errors.password}
+        isInvalid={password.hasError}
+        errorMessage={password.errors}
         autoComplete="on"
         endContent={
           <button className="focus:outline-none" type="button" onClick={toggleVisibilityHandler}>
@@ -129,11 +99,11 @@ export default function LoginForm() {
         }
       />
 
-      {!!error.errors._form.length && (
-        <Alert title="Une erreur s'est produite" content={error.errors._form} variant="danger" className="mb-2" />
+      {!!formErrors.length && (
+        <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
       )}
 
-      <Button type="submit" color="success" variant="flat" disabled={isConfirmButtonDisabled} className="w-full">
+      <Button disabled={isConfirmButtonDisabled} type="submit" color="success" variant="flat" className="w-full">
         Se connecter
       </Button>
     </form>
