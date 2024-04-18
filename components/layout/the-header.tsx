@@ -57,35 +57,41 @@ export default function TheHeader() {
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        {userPaths.map((userPath) => (
-          <NavbarItem key={`${userPath.url}`}>
-            <Link
-              color={pathName === userPath.url ? 'primary' : 'foreground'}
-              className="w-full"
-              href={userPath.url}
-              size="lg"
-            >
-              {userPath.text}
-            </Link>
-          </NavbarItem>
-        ))}
-      </NavbarContent>
-      <NavbarContent justify="end">{logInConditionalRendering()}</NavbarContent>
-      <NavbarMenu>
-        {userPaths.map((userPath) => (
-          <NavbarMenuItem key={`${userPath.url}`}>
-            <Link
-              color={pathName === userPath.url ? 'primary' : 'foreground'}
-              className="w-full"
-              href={userPath.url}
-              size="lg"
-            >
-              {userPath.text}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
+      {session.status !== 'loading' && (
+        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+          {userPaths.map((userPath) => (
+            <NavbarItem key={`${userPath.url}`}>
+              <Link
+                color={pathName === userPath.url ? 'primary' : 'foreground'}
+                className="w-full"
+                href={userPath.url}
+                size="lg"
+              >
+                {userPath.text}
+              </Link>
+            </NavbarItem>
+          ))}
+        </NavbarContent>
+      )}
+
+      {session.status !== 'loading' && <NavbarContent justify="end">{logInConditionalRendering()}</NavbarContent>}
+
+      {session.status !== 'loading' && (
+        <NavbarMenu>
+          {userPaths.map((userPath) => (
+            <NavbarMenuItem key={`${userPath.url}`}>
+              <Link
+                color={pathName === userPath.url ? 'primary' : 'foreground'}
+                className="w-full"
+                href={userPath.url}
+                size="lg"
+              >
+                {userPath.text}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+        </NavbarMenu>
+      )}
     </Navbar>
   )
 }
