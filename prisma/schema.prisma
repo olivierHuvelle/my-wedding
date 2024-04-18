@@ -32,14 +32,13 @@ model Role {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  roleId           Int
-  email            String    @unique
-  password         String
-  confirmationCode String?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  confirmedAt      DateTime?
+  id          Int       @id @default(autoincrement())
+  roleId      Int
+  email       String    @unique
+  password    String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  confirmedAt DateTime?
 
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 }
