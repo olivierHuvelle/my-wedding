@@ -19,6 +19,7 @@ import { Event, EventGuest, Guest, Menu } from '@prisma/client'
 import { GuestCreateInput } from '@/back/models/Guest'
 import Alert from '@/components/ui/alert'
 import { createGuest, updateGuest } from '@/actions/guest'
+import toast from 'react-hot-toast'
 
 interface GuestFormProps {
   guest?:
@@ -144,6 +145,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
         input.setServerErrors([])
       })
       setFormErrors([])
+      toast.success("L'invité a bien été mis à jour")
       onOpenChange()
     }
   }
