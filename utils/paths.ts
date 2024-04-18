@@ -28,6 +28,12 @@ const paths = {
     text: 'Marié',
     roleCategories: [RoleCategories.Married],
   },
+  profile: {
+    url: '/profile',
+    isAuthenticated: true,
+    text: 'Profile',
+    roleCategories: [RoleCategories.Married, RoleCategories.Guest],
+  },
   permission: {
     url: '/permission',
     isAuthenticated: false,

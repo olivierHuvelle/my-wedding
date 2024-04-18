@@ -48,8 +48,6 @@ export default function LoginForm() {
       redirect: false,
     })
 
-    console.log('response : ', response) // TODO delete me
-
     if (response?.error) {
       const errorMessage =
         response.error === 'CredentialsSignin' ? 'Identifiants invalides' : "Une erreur s'est produite"
