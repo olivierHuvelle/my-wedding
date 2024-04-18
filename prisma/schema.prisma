@@ -34,7 +34,7 @@ model Role {
 model User {
   id          Int       @id @default(autoincrement())
   roleId      Int
-  email       String    @unique
+  identifier  String    @unique
   password    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

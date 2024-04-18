@@ -14,9 +14,9 @@ import paths, { RoleCategories } from '@/utils/paths'
 export default function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [formErrors, setFormErrors] = useState<string[]>([])
-  const email = useInput(loginSchema.pick({ email: true }), 'email')
+  const identifier = useInput(loginSchema.pick({ identifier: true }), 'identifier')
   const password = useInput(loginSchema.pick({ password: true }), 'password')
-  const inputs = useMemo(() => [email, password], [email, password])
+  const inputs = useMemo(() => [identifier, password], [identifier, password])
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
   const router = useRouter()
@@ -28,7 +28,7 @@ export default function LoginForm() {
 
   const submitHandler = async (formData: FormData) => {
     const result = loginSchema.safeParse({
-      email: formData.get('email'),
+      identifier: formData.get('identifier'),
       password: formData.get('password'),
     })
 
@@ -45,7 +45,7 @@ export default function LoginForm() {
     }
 
     const response = await signIn('credentials', {
-      email: result.data.email,
+      identifier: result.data.identifier,
       password: result.data.password,
       redirect: false,
     })
@@ -65,15 +65,15 @@ export default function LoginForm() {
   return (
     <form action={submitHandler}>
       <Input
-        name="email"
-        label="Email"
+        name="identifier"
+        label="Identifiant"
         placeholder="john.doe@gmail.com"
         isRequired={true}
-        value={email.value}
-        onInput={email.inputHandler}
-        onBlur={email.blurHandler}
-        isInvalid={email.hasError}
-        errorMessage={email.errors}
+        value={identifier.value}
+        onInput={identifier.inputHandler}
+        onBlur={identifier.blurHandler}
+        isInvalid={identifier.hasError}
+        errorMessage={identifier.errors}
         autoComplete="on"
       />
       <Input

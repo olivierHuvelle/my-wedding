@@ -9,10 +9,10 @@ export class GuestSeeder extends BaseSeeder {
   async seed() {
     console.log('starting seeding guests')
     const users = await this._prisma.user.findMany({})
-    const olivier = users.find((user) => user.email === 'olivier.huvelle@gmail.com')
-    const laurie = users.find((user) => user.email === 'laurie.swenen@gmail.com')
+    const olivier = users.find((user) => user.identifier === 'olivier.huvelle@gmail.com')
+    const laurie = users.find((user) => user.identifier === 'laurie.swenen@gmail.com')
     const otherGuestUsers = users.filter(
-      (user) => !['olivier.huvelle@gmail.com', 'laurie.swenen@gmail.com'].includes(user.email),
+      (user) => !['olivier.huvelle@gmail.com', 'laurie.swenen@gmail.com'].includes(user.identifier),
     )
     const factory = new GuestFactory()
     await this._prisma.guest.createMany({

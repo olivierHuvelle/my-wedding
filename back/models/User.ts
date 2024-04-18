@@ -3,7 +3,10 @@ import { z } from 'zod'
 
 export const UserCreateInput = z.object({
   roleId: z.number().int().positive({ message: 'roleId doit être un entier strictement positif' }),
-  email: z.string().email({ message: "l'adresse mail doit être valide" }),
+  identifier: z
+    .string()
+    .min(5, { message: "l'identifiant doit avoir une longueur minimale de 5 caractères" })
+    .max(255, { message: "l'identifiant doit contenir au plus 255 caractères" }),
   password: z
     .string()
     .trim()
@@ -12,7 +15,10 @@ export const UserCreateInput = z.object({
 }) satisfies z.Schema<Prisma.UserUncheckedCreateInput>
 
 export const loginSchema = z.object({
-  email: z.string().email({ message: "l'adresse mail doit être valide" }),
+  identifier: z
+    .string()
+    .min(5, { message: "l'identifiant doit avoir une longueur minimale de 5 caractères" })
+    .max(255, { message: "l'identifiant doit contenir au plus 255 caractères" }),
   password: z
     .string()
     .trim()

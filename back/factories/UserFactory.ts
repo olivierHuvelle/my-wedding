@@ -4,57 +4,57 @@ import { hashSync } from 'bcrypt'
 
 interface User {
   roleId: number
-  email: string
+  identifier: string
   password: string
   confirmedAt: Date
 }
 
 export class UserFactory extends BaseFactory<User> {
-  protected _uniqueConstraints: { email: string[] }
+  protected _uniqueConstraints: { identifier: string[] }
   private roleIds: number[]
 
   constructor(roleIds: number[]) {
     super()
     this._uniqueConstraints = {
-      email: [],
+      identifier: [],
     }
     this.roleIds = roleIds
   }
 
   create(): User {
-    let email = ''
+    let identifier = ''
     let firstName = ''
     let lastName = ''
     do {
       firstName = fakerFR_BE.person.firstName()
       lastName = fakerFR_BE.person.lastName()
-      email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@gmail.com`
-    } while (this._uniqueConstraints.email.includes(email))
-    this._uniqueConstraints.email.push(email)
+      identifier = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@gmail.com`
+    } while (this._uniqueConstraints.identifier.includes(identifier))
+    this._uniqueConstraints.identifier.push(identifier)
 
     return {
       roleId: this.roleIds[Math.floor(Math.random() * this.roleIds.length)],
-      email,
+      identifier,
       password: hashSync('password', 10),
       confirmedAt: new Date(),
     }
   }
 
   createOlivier(marriedRoleId: number): User {
-    const email = 'olivier.huvelle@gmail.com'
+    const identifier = 'olivier.huvelle@gmail.com'
     return {
       roleId: marriedRoleId,
-      email,
+      identifier,
       password: hashSync('password', 10),
       confirmedAt: new Date(),
     }
   }
 
   createLaurie(marriedRoleId: number): User {
-    const email = 'laurie.swenen@gmail.com'
+    const identifier = 'laurie.swenen@gmail.com'
     return {
       roleId: marriedRoleId,
-      email,
+      identifier,
       password: hashSync('password', 10),
       confirmedAt: new Date(),
     }
