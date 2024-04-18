@@ -1,5 +1,5 @@
 import { auth } from '@/utils/auth'
-import Link from 'next/link'
+import PermissionSection from '@/components/permission/permission-section'
 import paths, { RoleCategories } from '@/utils/paths'
 
 export default async function PermissionPage() {
@@ -496,16 +496,7 @@ export default async function PermissionPage() {
         />
       </svg>
 
-      <div className="flex flex-col">
-        <h1 className="my-2 text-center text-2xl font-bold text-gray-800">Acces refusé</h1>
-        <p className="mb-6 mt-2 text-center text-gray-800">Vous n avez pas les permissions requises</p>
-        <Link
-          href={redirectionUrl}
-          className="mx-auto my-2 rounded  border bg-indigo-600 px-8 py-4 text-center text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-700 focus:ring-opacity-50 sm:w-full lg:w-auto"
-        >
-          Retour à la page principale
-        </Link>
-      </div>
+      <PermissionSection redirectionUrl={redirectionUrl} />
     </main>
   )
 }

@@ -50,12 +50,16 @@ export default function LoginForm() {
       redirect: false,
     })
 
+    console.log('response : ', response) // TODO delete me
+
     if (response?.error) {
       const errorMessage =
         response.error === 'CredentialsSignin' ? 'Identifiants invalides' : "Une erreur s'est produite"
       setFormErrors([errorMessage])
     } else {
       setFormErrors([])
+
+      console.log('session : ', session) // TODO delete me
       const url = session.data?.user?.roleCategory === RoleCategories.Married ? paths.married.url : paths.guest.url
       router.push(url)
       router.refresh()

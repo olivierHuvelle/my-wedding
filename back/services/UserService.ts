@@ -18,11 +18,11 @@ export class IncorrectPasswordError extends Error {
 export class UserService {
   protected _prisma = prisma
 
-  async findUserByEmailAndPassword(email: string, password: string): Promise<UserSession> {
+  async findUserByIdentifierAndPassword(identifier: string, password: string): Promise<UserSession> {
     const roleService = new RoleService()
     const user = await this._prisma.user.findFirstOrThrow({
       where: {
-        email,
+        identifier,
       },
       include: {
         role: true,
@@ -37,7 +37,7 @@ export class UserService {
 
     return {
       id: user.id,
-      email: user.email,
+      email: user.identifier,
       roleCategory: parentRole.name,
     }
   }

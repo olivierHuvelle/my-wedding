@@ -27,6 +27,9 @@ export default function withRoleMiddleware(middleware: CustomMiddleware) {
           path.roleCategories.length &&
           !path.roleCategories.includes(tokenRoleCategory)
         ) {
+          const redirectToPermissionPage = new URL(paths.permission.url, request.url)
+          redirectToPermissionPage.searchParams.append('title', 'Accès refusé')
+          redirectToPermissionPage.searchParams.append('message', 'Vous n avez pas les permissions requises')
           return NextResponse.redirect(new URL(paths.permission.url, request.url), { status: 302 })
         }
       }

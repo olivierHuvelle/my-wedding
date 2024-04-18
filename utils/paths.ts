@@ -30,7 +30,7 @@ const paths = {
   },
   permission: {
     url: '/permission',
-    isAuthenticated: true,
+    isAuthenticated: false,
     text: 'Permission',
     roleCategories: [],
   },

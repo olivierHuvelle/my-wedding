@@ -20,13 +20,14 @@ export const options: NextAuthOptions = {
       // @ts-expect-error didn't find how to solve the issue
       async authorize(credentials) {
         const result = loginSchema.safeParse(credentials)
+        console.log('result is ', result) // TODO delete me
         if (!result.success) {
           return null
         }
 
         const userService = new UserService()
         try {
-          return await userService.findUserByEmailAndPassword(result.data.email, result.data.password)
+          return await userService.findUserByIdentifierAndPassword(result.data.identifier, result.data.password)
         } catch (err: unknown) {
           return null
         }
