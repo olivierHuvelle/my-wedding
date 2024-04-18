@@ -14,7 +14,8 @@ export const GuestCreateInput = z.object({
     .min(3, { message: 'le nom doit contenir minimum 3 caractères' })
     .max(255, { message: 'le nom doit contenir au plus 255 caractères' })
     .nullable()
-    .optional(),
+    .optional()
+    .or(z.literal('')),
   isChild: z.boolean(),
   foodProhibitions: z
     .string()
@@ -33,7 +34,7 @@ export const GuestCreateInput = z.object({
     .string()
     .trim()
     .min(1, { message: 'le numéro doit contenir au minimum 1 caractère' })
-    .max(255, { message: 'le numéro doit contenir au minimum 1 caractère' }),
+    .max(255, { message: 'le numéro doit contenir maxi caractère' }),
   street: z
     .string()
     .trim()
