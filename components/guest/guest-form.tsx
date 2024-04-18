@@ -45,10 +45,10 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   )
   const remark = useInput(GuestCreateInput.pick({ remark: true }), 'remark', guest?.remark ?? '')
   const phone = useInput(GuestCreateInput.pick({ phone: true }), 'phone', guest?.phone ?? '')
-  const city = useInput(GuestCreateInput.pick({ city: true }), 'city', guest?.city)
-  const number = useInput(GuestCreateInput.pick({ number: true }), 'number', guest?.number)
-  const street = useInput(GuestCreateInput.pick({ street: true }), 'street', guest?.street)
-  const zipCode = useInput(GuestCreateInput.pick({ zipCode: true }), 'zipCode', guest?.zipCode)
+  const city = useInput(GuestCreateInput.pick({ city: true }), 'city', guest?.city ?? '')
+  const number = useInput(GuestCreateInput.pick({ number: true }), 'number', guest?.number ?? '')
+  const street = useInput(GuestCreateInput.pick({ street: true }), 'street', guest?.street ?? '')
+  const zipCode = useInput(GuestCreateInput.pick({ zipCode: true }), 'zipCode', guest?.zipCode ?? '')
   const [menuValue, setMenuValue] = useState<Menu>(guest?.menu ? guest.menu : Menu.Adult)
   const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest?.age ? `${guest?.age}` : '', (value) =>
     parseInt(value),
@@ -232,6 +232,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                   onInput={number.inputHandler}
                   isInvalid={number.hasError}
                   errorMessage={number.errors}
+                  onBlur={number.blurHandler}
                 />
                 <Input
                   name="street"

@@ -27,97 +27,114 @@ export class GuestService {
   }
 
   async update(id: number, userId: number, eventIds: number[], data: Prisma.GuestUpdateInput) {
-    const user = await this._prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    })
-    if (!user) {
-      throw new Error(`L'utilisateur avec l'ID ${userId} n'existe pas`)
-    }
-
-    const existingEvents = await this._prisma.event.findMany({
-      where: {
-        id: {
-          in: eventIds,
-        },
-      },
-    })
-
-    const missingEventIds = eventIds.filter((eventId) => !existingEvents.some((event) => event.id === eventId))
-
-    if (missingEventIds.length > 0) {
-      throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
-    }
-
-    const eventsToDisconnect = await this._prisma.guest
-      .findUnique({
-        where: { id },
-        include: {
-          events: true,
-        },
-      })
-      .then(
-        (guest) => guest?.events.map((event) => event.eventId).filter((eventId) => !eventIds.includes(eventId)) || [],
-      )
-
     try {
-      return await this._prisma.guest.update({
-        where: { id },
-        data: {
-          ...data,
-          userId,
-          events: {
-            connect: eventIds.map((eventId) => ({ eventId_guestId: { eventId, guestId: id } })),
-            disconnect: eventsToDisconnect.map((eventId) => ({ eventId_guestId: { eventId, guestId: id } })),
+      const updatedGuest = await this._prisma.$transaction(async (prisma) => {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: userId,
           },
-        },
+        })
+        if (!user) {
+          throw new Error(`L'utilisateur avec l'ID ${userId} n'existe pas`)
+        }
+
+        const existingEvents = await prisma.event.findMany({
+          where: {
+            id: {
+              in: eventIds,
+            },
+          },
+        })
+
+        const missingEventIds = eventIds.filter((eventId) => !existingEvents.some((event) => event.id === eventId))
+
+        if (missingEventIds.length > 0) {
+          throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
+        }
+
+        await prisma.eventGuest.deleteMany({
+          where: {
+            guestId: id,
+          },
+        })
+
+        const newEventGuestAssociations = eventIds.map((eventId) => ({
+          eventId,
+          guestId: id,
+        }))
+
+        await prisma.eventGuest.createMany({
+          data: newEventGuestAssociations,
+        })
+
+        return prisma.guest.update({
+          where: { id },
+          data: {
+            ...data,
+            userId,
+          },
+          include: {
+            events: {
+              include: {
+                event: true,
+              },
+            },
+          },
+        })
       })
+
+      return updatedGuest
     } catch (err) {
       throw new Error("Erreur lors de la mise à jour de l'invité")
     }
   }
 
   async create(userId: number, eventIds: number[], data: GuestCreateInput) {
-    const user = await this._prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    })
-    if (!user) {
-      throw new Error(`L'utilisateur avec l'ID ${userId} n'existe pas`)
-    }
-
-    const existingEvents = await this._prisma.event.findMany({
-      where: {
-        id: {
-          in: eventIds,
-        },
-      },
-    })
-
-    const missingEventIds = eventIds.filter((eventId) => !existingEvents.some((event) => event.id === eventId))
-
-    if (missingEventIds.length > 0) {
-      throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
-    }
-
     try {
-      const guest = await this._prisma.guest.create({
-        data: {
-          ...data,
-          userId,
-        },
+      const createdGuest = await this._prisma.$transaction(async (prisma) => {
+        const user = await prisma.user.findUnique({
+          where: {
+            id: userId,
+          },
+        })
+        if (!user) {
+          throw new Error(`L'utilisateur avec l'ID ${userId} n'existe pas`)
+        }
+
+        const existingEvents = await prisma.event.findMany({
+          where: {
+            id: {
+              in: eventIds,
+            },
+          },
+        })
+
+        const missingEventIds = eventIds.filter((eventId) => !existingEvents.some((event) => event.id === eventId))
+
+        if (missingEventIds.length > 0) {
+          throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
+        }
+
+        const createdGuest = await prisma.guest.create({
+          data: {
+            ...data,
+            userId,
+          },
+        })
+
+        const newEventGuestAssociations = eventIds.map((eventId) => ({
+          eventId,
+          guestId: createdGuest.id,
+        }))
+
+        await prisma.eventGuest.createMany({
+          data: newEventGuestAssociations,
+        })
+
+        return createdGuest
       })
 
-      return await this._prisma.guest.update({
-        where: { id: guest.id },
-        data: {
-          events: {
-            connect: eventIds.map((eventId) => ({ eventId_guestId: { eventId, guestId: guest.id } })),
-          },
-        },
-      })
+      return createdGuest
     } catch (err) {
       throw new Error("Erreur lors de la création de l'invité")
     }
