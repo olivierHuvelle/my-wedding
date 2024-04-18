@@ -35,6 +35,14 @@ export interface GuestFormState extends BaseFormState {
   }
 }
 
+export interface UserFormState extends BaseFormState {
+  errors: {
+    identifier: string[]
+    password: string[]
+    _form: string[]
+  }
+}
+
 export function createEmptyFormState(): BaseFormState {
   return {
     errors: {
@@ -73,6 +81,16 @@ export function createEmptyGuestFormState(): GuestFormState {
       remark: [],
       street: [],
       age: [],
+      _form: [],
+    },
+  }
+}
+
+export function createEmptyUserFormState(): UserFormState {
+  return {
+    errors: {
+      identifier: [],
+      password: [],
       _form: [],
     },
   }

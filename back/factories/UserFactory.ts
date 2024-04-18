@@ -6,7 +6,6 @@ interface User {
   roleId: number
   identifier: string
   password: string
-  confirmedAt: Date
 }
 
 export class UserFactory extends BaseFactory<User> {
@@ -36,7 +35,6 @@ export class UserFactory extends BaseFactory<User> {
       roleId: this.roleIds[Math.floor(Math.random() * this.roleIds.length)],
       identifier,
       password: hashSync('password', 10),
-      confirmedAt: new Date(),
     }
   }
 
@@ -46,7 +44,6 @@ export class UserFactory extends BaseFactory<User> {
       roleId: marriedRoleId,
       identifier,
       password: hashSync('password', 10),
-      confirmedAt: new Date(),
     }
   }
 
@@ -56,7 +53,6 @@ export class UserFactory extends BaseFactory<User> {
       roleId: marriedRoleId,
       identifier,
       password: hashSync('password', 10),
-      confirmedAt: new Date(),
     }
   }
 }

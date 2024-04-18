@@ -1,6 +1,8 @@
 import { compareSync } from 'bcrypt'
 import prisma from '@/back/database/db'
 import { RoleService } from '@/back/services/RoleService'
+import { Prisma } from '@prisma/client'
+import { hashSync } from 'bcrypt'
 
 export interface UserSession {
   id: number
@@ -17,6 +19,12 @@ export class IncorrectPasswordError extends Error {
 
 export class UserService {
   protected _prisma = prisma
+
+  async getUser(id: number) {
+    return await this._prisma.user.findFirstOrThrow({
+      where: { id },
+    })
+  }
 
   async findUserByIdentifierAndPassword(identifier: string, password: string): Promise<UserSession> {
     const roleService = new RoleService()
@@ -40,5 +48,13 @@ export class UserService {
       identifier: user.identifier,
       roleCategory: parentRole.name,
     }
+  }
+
+  async update(id: number, data: Prisma.UserUpdateInput) {
+    data.password = hashSync(data.password as string, 10)
+    return await this._prisma.user.update({
+      where: { id },
+      data,
+    })
   }
 }
