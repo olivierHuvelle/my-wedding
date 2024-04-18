@@ -4,7 +4,7 @@ import { RoleService } from '@/back/services/RoleService'
 
 export interface UserSession {
   id: number
-  email: string
+  identifier: string
   roleCategory: string
 }
 
@@ -37,7 +37,7 @@ export class UserService {
 
     return {
       id: user.id,
-      email: user.identifier,
+      identifier: user.identifier,
       roleCategory: parentRole.name,
     }
   }

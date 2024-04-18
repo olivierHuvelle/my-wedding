@@ -14,13 +14,13 @@ export const options: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       credentials: {
-        email: {},
+        identifier: {},
         password: {},
       },
       // @ts-expect-error didn't find how to solve the issue
       async authorize(credentials) {
         const result = loginSchema.safeParse(credentials)
-        console.log('result is ', result) // TODO delete me
+
         if (!result.success) {
           return null
         }
@@ -36,7 +36,6 @@ export const options: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user }) => {
-      // @ts-expect-error Message
       user && (token.user = user)
       return token
     },

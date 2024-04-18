@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
@@ -9,7 +8,7 @@ import { loginSchema } from '@/back/models/User'
 import { Input, Button } from '@nextui-org/react'
 import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa6'
 import Alert from '@/components/ui/alert'
-import paths, { RoleCategories } from '@/utils/paths'
+import paths from '@/utils/paths'
 
 export default function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -20,7 +19,6 @@ export default function LoginForm() {
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
   const router = useRouter()
-  const session = useSession()
 
   const toggleVisibilityHandler = () => {
     setIsPasswordVisible(!isPasswordVisible)
@@ -58,10 +56,7 @@ export default function LoginForm() {
       setFormErrors([errorMessage])
     } else {
       setFormErrors([])
-
-      console.log('session : ', session) // TODO delete me
-      const url = session.data?.user?.roleCategory === RoleCategories.Married ? paths.married.url : paths.guest.url
-      router.push(url)
+      router.push(paths.guest.url)
       router.refresh()
     }
   }
