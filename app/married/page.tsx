@@ -1,4 +1,4 @@
-import EventMarriedList from '@/components/event/event-married-list'
+import EventMarriedList from '@/components/married/event/list/event-married-list'
 
 export default function MarriedPage() {
   return (

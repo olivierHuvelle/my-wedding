@@ -1,5 +1,5 @@
 import { getEvents } from '@/actions/event'
-import EventMarriedCard from '@/components/event/event-married-card'
+import EventMarriedCard from '@/components/married/event/list/event-married-card'
 
 export default async function EventMarriedList() {
   const events = await getEvents()

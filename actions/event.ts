@@ -49,7 +49,7 @@ export async function updateEvent(event: Event, formData: unknown): Promise<Even
       return {
         errors: {
           ...res.errors,
-          startingAt: ['le début doit être antérieur à la fin'],
+          _form: ['le début doit être antérieur à la fin'],
         },
       }
     }

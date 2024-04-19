@@ -28,9 +28,9 @@ export default function TheHeader() {
   const userPaths = Object.values(paths)
     .filter(
       (value) =>
-        // @ts-expect-error Quick and dirty fix
         value.isAuthenticated &&
         !value.isSubMenu &&
+        // @ts-expect-error Message
         value.roleCategories.includes(session.data?.user.roleCategory ?? RoleCategories.Guest),
     )
     .map((value) => ({
