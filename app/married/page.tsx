@@ -1,7 +1,9 @@
+import EventMarriedList from '@/components/event/event-married-list'
+
 export default function MarriedPage() {
   return (
     <div>
-      <h2>Married page</h2>
+      <EventMarriedList />
     </div>
   )
 }

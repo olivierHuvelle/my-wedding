@@ -29,7 +29,9 @@ export default function TheHeader() {
     .filter(
       (value) =>
         // @ts-expect-error Quick and dirty fix
-        value.isAuthenticated && value.roleCategories.includes(session.data?.user.roleCategory ?? RoleCategories.Guest),
+        value.isAuthenticated &&
+        !value.isSubMenu &&
+        value.roleCategories.includes(session.data?.user.roleCategory ?? RoleCategories.Guest),
     )
     .map((value) => ({
       url: value.url,
@@ -62,7 +64,7 @@ export default function TheHeader() {
           {userPaths.map((userPath) => (
             <NavbarItem key={`${userPath.url}`}>
               <Link
-                color={pathName === userPath.url ? 'primary' : 'foreground'}
+                color={pathName.startsWith(userPath.url) ? 'primary' : 'foreground'}
                 className="w-full"
                 href={userPath.url}
                 size="lg"
@@ -81,7 +83,7 @@ export default function TheHeader() {
           {userPaths.map((userPath) => (
             <NavbarMenuItem key={`${userPath.url}`}>
               <Link
-                color={pathName === userPath.url ? 'primary' : 'foreground'}
+                color={pathName.startsWith(userPath.url) ? 'primary' : 'foreground'}
                 className="w-full"
                 href={userPath.url}
                 size="lg"

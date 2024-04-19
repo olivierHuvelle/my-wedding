@@ -9,6 +9,12 @@ import { Event } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
 import { hasRole, isAuthenticated, PermissionDenied, UnauthenticatedError } from '@/actions/authentication'
 
+export async function getEvent(id: number) {
+  isAuthenticated(await auth())
+  const eventService = new EventService()
+  return await eventService.get(id)
+}
+
 export async function getEvents() {
   isAuthenticated(await auth())
   const eventService = new EventService()
