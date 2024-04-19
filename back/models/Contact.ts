@@ -2,10 +2,33 @@ import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 
 export const ContactCreateInput = z.object({
-  phone: z.string().optional(),
-  email: z.string().email({ message: 'veuillez entrez une adresse email valide' }).optional(),
-  firstName: z.string().max(255, { message: 'le prénom doit contenir au plus 255 caractères' }).optional(),
-  lastName: z.string().max(255, { message: 'le nom doit contenir au plus 255 caractères' }).optional(),
+  job: z
+    .string()
+    .trim()
+    .min(1, { message: 'le téléphone doit contenir au minimum 1 caractère' })
+    .max(255, { message: 'le téléphone doit contenir au plus 255 caractères' })
+    .optional()
+    .or(z.literal('')),
+  phone: z
+    .string()
+    .trim()
+    .min(1, { message: 'le téléphone doit contenir au minimum 1 caractère' })
+    .max(255, { message: 'le téléphone doit contenir au plus 255 caractères' })
+    .optional()
+    .or(z.literal('')),
+  email: z.string().email({ message: 'veuillez entrez une adresse email valide' }).optional().or(z.literal('')),
+  firstName: z
+    .string()
+    .min(1, { message: 'le prénom doit contenir au minimum 1 caractère' })
+    .max(255, { message: 'le prénom doit contenir au plus 255 caractères' })
+    .optional()
+    .or(z.literal('')),
+  lastName: z
+    .string()
+    .min(1, { message: 'le nom doit contenir au minimum 1 caractère' })
+    .max(255, { message: 'le nom doit contenir au plus 255 caractères' })
+    .optional()
+    .or(z.literal('')),
   zipCode: z
     .string()
     .trim()

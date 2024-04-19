@@ -43,6 +43,22 @@ export interface UserFormState extends BaseFormState {
   }
 }
 
+export interface ContactFormState extends BaseFormState {
+  errors: {
+    phone: string[]
+    email: string[]
+    job: string[]
+    firstName: string[]
+    lastName: string[]
+    zipCode: string[]
+    number: string[]
+    street: string[]
+    city: string[]
+    remark: string[]
+    _form: string[]
+  }
+}
+
 export function createEmptyFormState(): BaseFormState {
   return {
     errors: {
@@ -91,6 +107,24 @@ export function createEmptyUserFormState(): UserFormState {
     errors: {
       identifier: [],
       password: [],
+      _form: [],
+    },
+  }
+}
+
+export function createEmptyContactFormState(): ContactFormState {
+  return {
+    errors: {
+      phone: [],
+      email: [],
+      job: [],
+      firstName: [],
+      lastName: [],
+      zipCode: [],
+      number: [],
+      street: [],
+      city: [],
+      remark: [],
       _form: [],
     },
   }

@@ -67,6 +67,7 @@ model Contact {
   id        Int            @id @default(autoincrement())
   phone     String?
   email     String?        @unique
+  job       String?
   firstName String?
   lastName  String?
   zipCode   String
