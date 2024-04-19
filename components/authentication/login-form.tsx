@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import useInput from '@/hooks/use-input'
 import { loginSchema } from '@/back/models/User'
@@ -11,14 +11,17 @@ import Alert from '@/components/ui/alert'
 import paths from '@/utils/paths'
 
 export default function LoginForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const identifierFromUrl = searchParams.get('identifier') || ''
+  const passwordFromUrl = searchParams.get('password') || ''
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [formErrors, setFormErrors] = useState<string[]>([])
-  const identifier = useInput(loginSchema.pick({ identifier: true }), 'identifier')
-  const password = useInput(loginSchema.pick({ password: true }), 'password')
+  const identifier = useInput(loginSchema.pick({ identifier: true }), 'identifier', identifierFromUrl)
+  const password = useInput(loginSchema.pick({ password: true }), 'password', passwordFromUrl)
   const inputs = useMemo(() => [identifier, password], [identifier, password])
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
-
-  const router = useRouter()
 
   const toggleVisibilityHandler = () => {
     setIsPasswordVisible(!isPasswordVisible)
