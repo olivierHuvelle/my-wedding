@@ -18,8 +18,7 @@ import Alert from '@/components/ui/alert'
 import { Contact, Event } from '@prisma/client'
 import { ContactCreateInput } from '@/back/models/Contact'
 import { ContactWithEvents } from '@/app/married/event/[id]/page'
-import { updateContact } from '@/actions/contact'
-import { createEmptyContactFormState } from '@/actions/main'
+import { updateContact, createContact } from '@/actions/contact'
 import toast from 'react-hot-toast'
 
 interface ContactFormProps {
@@ -96,7 +95,7 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
 
     const response = contactWithEvents
       ? await updateContact(contact as Contact, result.data, Array.from(selectedEvents, Number))
-      : createEmptyContactFormState()
+      : await createContact(result.data, Array.from(selectedEvents, Number))
 
     let hasResponseError = false
     const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
@@ -117,7 +116,7 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
         input.setServerErrors([])
       })
       setFormErrors([])
-      toast.success('Le contact a bien été mis à jour')
+      toast.success(contact ? 'Le contact a bien été mis à jour' : 'Le contact a bien été créé')
       onOpenChange()
     }
   }
@@ -143,7 +142,6 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
                   name="firstName"
                   label="Prénom"
                   placeholder="John"
-                  isRequired={true}
                   value={firstName.value}
                   onInput={firstName.inputHandler}
                   isInvalid={firstName.hasError}

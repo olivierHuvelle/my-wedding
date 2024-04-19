@@ -145,7 +145,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
         input.setServerErrors([])
       })
       setFormErrors([])
-      toast.success("L'invité a bien été mis à jour")
+      toast.success(guest ? "L'invité a bien été mis à jour" : "L'invité a bien été créé")
       onOpenChange()
     }
   }

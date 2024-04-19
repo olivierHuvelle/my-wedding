@@ -3,6 +3,7 @@ import { getEvent, getEvents } from '@/actions/event'
 import EventForm from '@/components/married/event/single/event-form'
 import ContactCard from '@/components/contact/contact-card'
 import ContactEmptyCard from '@/components/contact/contact-empty-card'
+import ContactTile from '@/components/contact/contact-title'
 import { Contact } from '@prisma/client'
 
 export interface ContactWithEvents {
@@ -36,6 +37,7 @@ export default async function EventSinglePage({ params }: { params: { id: string
       contactsWithEvents[existingContactIndex].events.push(eventId)
     }
   })
+  contactsWithEvents.sort((a, b) => a.contact.id - b.contact.id)
 
   return (
     <main className="my-4 w-full md:w-auto md:min-w-96">
@@ -47,7 +49,7 @@ export default async function EventSinglePage({ params }: { params: { id: string
       </section>
 
       <section className="my-4">
-        <h2 className="mb-2 text-2xl">Contacts</h2>
+        <ContactTile events={events} />
         <div className="w-full rounded  md:w-auto md:min-w-96">
           {contactsWithEvents.length > 0 &&
             contactsWithEvents.map((contactWithEvents) => (

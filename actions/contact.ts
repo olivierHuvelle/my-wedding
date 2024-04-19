@@ -49,3 +49,31 @@ export async function updateContact(
     }
   }
 }
+
+export async function createContact(formData: unknown, eventIds: number[]): Promise<ContactFormState> {
+  const res = createEmptyContactFormState()
+  try {
+    await checkContactPermissions()
+    const result = ContactCreateInput.safeParse(formData)
+    if (!result.success) {
+      return {
+        errors: {
+          ...res.errors,
+          ...result.error.flatten().fieldErrors,
+        },
+      }
+    }
+    const contactService = new ContactService()
+    await contactService.create(eventIds, result.data)
+    revalidatePath(paths.married.url)
+    return res
+  } catch (err) {
+    if (err instanceof UnauthenticatedError || err instanceof PermissionDenied || err instanceof Error) {
+      res.errors._form.push(err.message)
+      return res
+    } else {
+      res.errors._form.push('Erreur lors de la création du contact, veuillez réessayer plus tard')
+      return res
+    }
+  }
+}
