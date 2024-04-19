@@ -10,7 +10,11 @@ export class EventService {
       include: {
         contacts: {
           include: {
-            contact: true,
+            contact: {
+              include: {
+                events: true,
+              },
+            },
           },
         },
         guests: {

@@ -4,6 +4,11 @@ import { Prisma } from '@prisma/client'
 export class ContactService {
   protected _prisma = prisma
 
+  async delete(id: number) {
+    return await this._prisma.contact.delete({
+      where: { id },
+    })
+  }
   async update(id: number, eventIds: number[], data: Prisma.ContactUpdateInput) {
     try {
       const updatedGuest = await this._prisma.$transaction(async (prisma) => {

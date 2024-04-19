@@ -4,7 +4,7 @@ import { auth } from '@/utils/auth'
 import { RoleCategories } from '@/utils/paths'
 import { ContactService } from '@/back/services/ContactService'
 import { isAuthenticated, PermissionDenied, UnauthenticatedError } from '@/actions/authentication'
-import { createEmptyContactFormState, ContactFormState } from '@/actions/main'
+import { createEmptyContactFormState, ContactFormState, BaseFormState, createEmptyFormState } from '@/actions/main'
 import { Contact } from '@prisma/client'
 import { ContactCreateInput } from '@/back/models/Contact'
 import paths from '@/utils/paths'
@@ -15,6 +15,25 @@ async function checkContactPermissions() {
   isAuthenticated(session)
   if (session?.user.roleCategory !== RoleCategories.Married) {
     throw new PermissionDenied()
+  }
+}
+
+export async function deleteContact(contact: Contact): Promise<BaseFormState> {
+  const res = createEmptyFormState()
+  try {
+    await checkContactPermissions()
+    const contactService = new ContactService()
+    await contactService.delete(contact.id)
+    revalidatePath(paths.married.url)
+    return res
+  } catch (err) {
+    if (err instanceof UnauthenticatedError || err instanceof PermissionDenied || err instanceof Error) {
+      res.errors._form.push(err.message)
+      return res
+    } else {
+      res.errors._form.push('Erreur lors de la suppression du contact, veuillez réessayer plus tard')
+      return res
+    }
   }
 }
 

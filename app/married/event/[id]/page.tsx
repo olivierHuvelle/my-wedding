@@ -31,13 +31,12 @@ export default async function EventSinglePage({ params }: { params: { id: string
     if (existingContactIndex === -1) {
       contactsWithEvents.push({
         contact,
-        events: [eventId],
+        events: contact.events.map((contactEvent) => contactEvent.eventId),
       })
     } else {
       contactsWithEvents[existingContactIndex].events.push(eventId)
     }
   })
-  contactsWithEvents.sort((a, b) => a.contact.id - b.contact.id)
 
   return (
     <main className="my-4 w-full md:w-auto md:min-w-96">
