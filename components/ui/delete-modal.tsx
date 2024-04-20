@@ -33,6 +33,7 @@ export default function DeleteModal<T>({
         errors: { ...response.errors },
       }))
     } else {
+      setError(createEmptyFormState())
       onOpenChange()
     }
   }

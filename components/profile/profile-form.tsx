@@ -52,6 +52,11 @@ export default function ProfileForm({ user }: ProfileFormProps) {
     }
   }
 
+  const reset = () => {
+    setFormErrors([])
+    inputs.forEach((input) => input.setServerErrors([]))
+  }
+
   const submitHandler = async (formData: FormData) => {
     const data = {
       password: formData.get('password'),
@@ -88,10 +93,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
     }
 
     if (!hasResponseError) {
-      inputs.forEach((input) => {
-        input.setServerErrors([])
-      })
-      setFormErrors([])
+      reset()
       toast.success('Le profil a bien été mis à jour')
       redirect(paths.guest.url)
     }

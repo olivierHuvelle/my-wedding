@@ -65,6 +65,11 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
     onClose()
   }
 
+  const reset = () => {
+    setFormErrors([])
+    inputs.forEach((input) => input.setServerErrors([]))
+  }
+
   const submitHandler = async (formData: FormData) => {
     const data = {
       firstName: formData.get('firstName'),
@@ -112,10 +117,7 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
     }
 
     if (!hasResponseError) {
-      inputs.forEach((input) => {
-        input.setServerErrors([])
-      })
-      setFormErrors([])
+      reset()
       toast.success(contact ? 'Le contact a bien été mis à jour' : 'Le contact a bien été créé')
       onOpenChange()
     }

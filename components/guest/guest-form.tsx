@@ -90,6 +90,11 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     onClose()
   }
 
+  const reset = () => {
+    setFormErrors([])
+    inputs.forEach((input) => input.setServerErrors([]))
+  }
+
   const submitHandler = async (formData: FormData) => {
     const data = {
       firstName: formData.get('firstName'),
@@ -141,10 +146,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     }
 
     if (!hasResponseError) {
-      inputs.forEach((input) => {
-        input.setServerErrors([])
-      })
-      setFormErrors([])
+      reset()
       toast.success(guest ? "L'invité a bien été mis à jour" : "L'invité a bien été créé")
       onOpenChange()
     }

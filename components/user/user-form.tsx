@@ -49,6 +49,11 @@ export default function UserForm({ user, roles, isOpen, onOpenChange, onClose }:
     onClose()
   }
 
+  const reset = () => {
+    setFormErrors([])
+    inputs.forEach((input) => input.setServerErrors([]))
+  }
+
   const submitHandler = async (formData: FormData) => {
     const data = {
       identifier: formData.get('identifier'),
@@ -88,8 +93,7 @@ export default function UserForm({ user, roles, isOpen, onOpenChange, onClose }:
       inputs.forEach((input) => {
         input.setServerErrors([])
       })
-      setFormErrors([])
-      inputs.forEach((input) => input.reset())
+      reset()
       toast.success(user ? "L'utilisateur a bien été mis à jour" : "L'utilisateur a bien été créé")
       onOpenChange()
     }

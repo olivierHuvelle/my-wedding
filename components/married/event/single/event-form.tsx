@@ -40,6 +40,11 @@ export default function EventForm({ event }: EventFormProps) {
 
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
 
+  const reset = () => {
+    setFormErrors([])
+    inputs.forEach((input) => input.setServerErrors([]))
+  }
+
   const submitHandler = async (formData: FormData) => {
     const data = {
       name: formData.get('name'),
@@ -81,10 +86,7 @@ export default function EventForm({ event }: EventFormProps) {
     }
 
     if (!hasResponseError) {
-      inputs.forEach((input) => {
-        input.setServerErrors([])
-      })
-      setFormErrors([])
+      reset()
       toast.success("L'événement a bien été mis à jour")
     }
   }
