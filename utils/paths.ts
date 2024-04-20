@@ -60,6 +60,13 @@ const paths = {
     isSubMenu: true,
     roleCategories: [RoleCategories.Married],
   },
+  marriedGuest: {
+    url: '/married/guest/',
+    isAuthenticated: true,
+    text: 'Invité',
+    isSubMenu: true,
+    roleCategories: [RoleCategories.Married],
+  },
 }
 
 export default paths
