@@ -1,7 +1,8 @@
 'use client'
 
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react'
+import { Card, CardBody, CardHeader, CardFooter, Divider, Button, Link } from '@nextui-org/react'
 import { Guest, User } from '@prisma/client'
+import paths from '@/utils/paths'
 
 interface NotificationCardProps {
   user: User & {
@@ -17,10 +18,18 @@ export default function NotificationCard({ user }: NotificationCardProps) {
       </CardHeader>
       <Divider />
       <CardBody>
-        <div className="flex flex-row justify-between">
+        <div className="flex  w-full flex-row justify-between">
           <p>Nombre invités : {user.guests.length}</p>
         </div>
       </CardBody>
+      <Divider />
+      <CardFooter>
+        <div className="flex w-full flex-row justify-end">
+          <Button href={`${paths.marriedGuest.url}${user.id}`} as={Link} variant="flat" color="primary">
+            Voir
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   )
 }
