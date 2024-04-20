@@ -19,7 +19,11 @@ export class EventService {
         },
         guests: {
           include: {
-            guest: true,
+            guest: {
+              include: {
+                events: true,
+              },
+            },
           },
         },
       },
