@@ -1,10 +1,11 @@
 'use client'
 
-import { Card, CardHeader, CardBody, CardFooter, Divider, Button, useDisclosure } from '@nextui-org/react'
+import { Card, CardHeader, CardBody, CardFooter, Divider, Button, useDisclosure, Link } from '@nextui-org/react'
 import UserForm from '@/components/user/user-form'
 import DeleteModal from '@/components/ui/delete-modal'
 import { User, Role, Guest } from '@prisma/client'
 import { deleteUser } from '@/actions/user'
+import paths from '@/utils/paths'
 
 interface UserCardProps {
   user: User & {
@@ -37,11 +38,14 @@ export default function UserCard({ user, roles }: UserCardProps) {
         <Divider />
         <CardFooter>
           <div className="flex w-full flex-row justify-end">
-            <Button onClick={onEditModalOpen} variant="flat" color="warning" className="mx-2">
+            <Button onClick={onEditModalOpen} variant="flat" color="warning">
               Modifier
             </Button>
-            <Button onClick={onDeleteModalOpen} variant="flat" color="danger">
+            <Button onClick={onDeleteModalOpen} variant="flat" color="danger" className="mx-2">
               Supprimer
+            </Button>
+            <Button href={`${paths.marriedGuest.url}${user.id}`} as={Link} variant="flat" color="primary">
+              Voir
             </Button>
           </div>
         </CardFooter>

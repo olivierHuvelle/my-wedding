@@ -18,7 +18,7 @@ export default async function MarriedGuestPage({ params }: { params: Params }) {
 
   return (
     <main>
-      <Breadcrumb links={[paths.married, currentPath]} />
+      <Breadcrumb links={[paths.married, paths.users, currentPath]} />
       <GuestList userId={userId} />
     </main>
   )
