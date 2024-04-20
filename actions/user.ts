@@ -17,6 +17,16 @@ async function checkUserPermissions(userId: number) {
   }
 }
 
+export async function getUsers() {
+  const session = await auth()
+  isAuthenticated(session)
+  if (session?.user.roleCategory !== RoleCategories.Married) {
+    throw new PermissionDenied()
+  }
+  const userService = new UserService()
+  return await userService.findAll()
+}
+
 export async function getUser(userId: number) {
   await checkUserPermissions(userId)
   const userService = new UserService()

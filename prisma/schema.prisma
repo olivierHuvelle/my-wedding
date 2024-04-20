@@ -39,7 +39,8 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  role   Role    @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  guests Guest[]
 }
 
 model Guest {
@@ -61,6 +62,7 @@ model Guest {
   updatedAt        DateTime @updatedAt
 
   events EventGuest[]
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Contact {

@@ -26,6 +26,14 @@ export class UserService {
     })
   }
 
+  async findAll() {
+    return await this._prisma.user.findMany({
+      include: {
+        guests: true,
+      },
+    })
+  }
+
   async findUserByIdentifierAndPassword(identifier: string, password: string): Promise<UserSession> {
     const roleService = new RoleService()
     const user = await this._prisma.user.findFirstOrThrow({
