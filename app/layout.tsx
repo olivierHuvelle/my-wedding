@@ -19,10 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-gray-100`}>
         <Providers>
           <TheHeader />
-          <div className="flex min-h-screen justify-center bg-gray-100">{children}</div>
+          <div className="my-4 flex min-h-screen w-full justify-center md:w-auto md:min-w-96">{children}</div>
           <Toaster position="top-right" />
         </Providers>
       </body>

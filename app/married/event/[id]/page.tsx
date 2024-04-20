@@ -8,6 +8,8 @@ import { Contact, Guest } from '@prisma/client'
 import GuestSummary from '@/components/married/event/single/guest/guest-summary'
 import { getGuests } from '@/actions/guest'
 import GuestEventCard from '@/components/married/event/single/guest/guest-event-card'
+import Breadcrumb from '@/components/ui/breadcrumb'
+import paths from '@/utils/paths'
 
 export interface ContactWithEvents {
   contact: Contact
@@ -32,6 +34,9 @@ export default async function EventSinglePage({ params }: { params: { id: string
     notFound()
   }
 
+  const currentPath = { ...paths.event }
+  currentPath.url = `${currentPath.url}${event.id}`
+  currentPath.text = `${currentPath.text} : ${event.name}`
   const guests = await getGuests()
   const contactsWithEvents: ContactWithEvents[] = []
 
@@ -50,6 +55,7 @@ export default async function EventSinglePage({ params }: { params: { id: string
 
   return (
     <main className="my-4 w-full md:w-auto md:min-w-96">
+      <Breadcrumb links={[paths.married, currentPath]} />
       <section>
         <h2 className="mb-2 text-2xl">{event.name}</h2>
         <div className="w-full rounded bg-white p-4 md:w-auto md:min-w-96">

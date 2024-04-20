@@ -63,3 +63,8 @@ const paths = {
 }
 
 export default paths
+
+export interface PathLink {
+  url: string
+  text: string
+}
