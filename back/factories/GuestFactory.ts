@@ -48,7 +48,7 @@ export class GuestFactory {
       userId: guest.userId,
       firstName: fakerFR_BE.person.firstName(),
       lastName: fakerFR_BE.person.lastName(),
-      isChild: true,
+      isChild: false,
       menu: Menu.Adult,
       foodProhibitions: this._getCommonFoodProhibitions(),
       zipCode: guest.zipCode,

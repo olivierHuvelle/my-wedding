@@ -23,6 +23,16 @@ export async function getGuestsForUserId(userId: number) {
   return await guestService.findAllGuestsForUserId(userId)
 }
 
+export async function getGuests() {
+  const session = await auth()
+  isAuthenticated(session)
+  if (session?.user.roleCategory !== RoleCategories.Married) {
+    throw new PermissionDenied()
+  }
+  const guestService = new GuestService()
+  return await guestService.findAll()
+}
+
 export async function deleteGuest(guest: Guest): Promise<BaseFormState> {
   const res = createEmptyFormState()
   try {

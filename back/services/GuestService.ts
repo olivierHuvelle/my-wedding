@@ -20,6 +20,18 @@ export class GuestService {
     })
   }
 
+  async findAll() {
+    return await this._prisma.guest.findMany({
+      include: {
+        events: {
+          include: {
+            event: true,
+          },
+        },
+      },
+    })
+  }
+
   async delete(id: number) {
     return await this._prisma.guest.delete({
       where: { id },
