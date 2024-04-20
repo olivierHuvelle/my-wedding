@@ -1,16 +1,19 @@
 'use client'
 
-import { Card, CardBody } from '@nextui-org/react'
+import { Card, CardBody, useDisclosure } from '@nextui-org/react'
 import { Event, EventGuest, Guest } from '@prisma/client'
+import GuestForm from '@/components/guest/guest-form'
 
 interface GuestEventCardProps {
   guest: Guest & {
     events: (EventGuest & { event: Event })[]
   }
   event: Event
+  events: Event[]
 }
 
-export default function GuestEventCard({ guest, event }: GuestEventCardProps) {
+export default function GuestEventCard({ guest, event, events }: GuestEventCardProps) {
+  const { isOpen, onOpenChange, onClose } = useDisclosure()
   const ageConditionalRendering = () => {
     if (!guest.isChild) {
       return 'Adulte'
@@ -25,7 +28,7 @@ export default function GuestEventCard({ guest, event }: GuestEventCardProps) {
 
   return (
     <>
-      <Card className="my-2 w-full">
+      <Card className="my-2 w-full" isPressable={true} onPress={onOpenChange}>
         <CardBody className="relative text-center">
           <div className={`absolute right-1 top-1 h-3 w-3 rounded-full ${badgeBackgroundRendering()}`}></div>
           <p>
@@ -33,6 +36,14 @@ export default function GuestEventCard({ guest, event }: GuestEventCardProps) {
           </p>
         </CardBody>
       </Card>
+      <GuestForm
+        events={events}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        onClose={onClose}
+        userId={guest.userId}
+        guest={guest}
+      />
     </>
   )
 }

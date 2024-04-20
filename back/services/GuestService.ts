@@ -29,6 +29,9 @@ export class GuestService {
           },
         },
       },
+      orderBy: {
+        id: 'asc',
+      },
     })
   }
 

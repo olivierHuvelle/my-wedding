@@ -79,7 +79,7 @@ export default async function EventSinglePage({ params }: { params: { id: string
         <div className="w-full rounded  md:w-auto md:min-w-96">
           <GuestSummary guests={event.guests.map((guest) => guest.guest)} />
           {guests.map((guest) => (
-            <GuestEventCard guest={guest} event={event} key={guest.id} />
+            <GuestEventCard guest={guest} event={event} key={guest.id} events={events} />
           ))}
         </div>
       </section>
