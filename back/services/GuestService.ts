@@ -1,6 +1,6 @@
 import prisma from '@/back/database/db'
 import { Prisma } from '@prisma/client'
-import GuestCreateInput = Prisma.GuestCreateInput
+import GuestUncheckedCreateInput = Prisma.GuestUncheckedCreateInput
 
 export class GuestService {
   protected _prisma = prisma
@@ -84,6 +84,7 @@ export class GuestService {
           data: {
             ...data,
             userId,
+            user: undefined,
           },
           include: {
             events: {
@@ -101,7 +102,7 @@ export class GuestService {
     }
   }
 
-  async create(userId: number, eventIds: number[], data: GuestCreateInput) {
+  async create(userId: number, eventIds: number[], data: GuestUncheckedCreateInput) {
     try {
       const createdGuest = await this._prisma.$transaction(async (prisma) => {
         const user = await prisma.user.findUnique({

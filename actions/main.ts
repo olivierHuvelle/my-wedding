@@ -43,6 +43,15 @@ export interface UserFormState extends BaseFormState {
   }
 }
 
+export interface MarriedUserFormState extends BaseFormState {
+  errors: {
+    roleId: string[]
+    identifier: string[]
+    password: string[]
+    _form: string[]
+  }
+}
+
 export interface ContactFormState extends BaseFormState {
   errors: {
     phone: string[]
@@ -125,6 +134,17 @@ export function createEmptyContactFormState(): ContactFormState {
       street: [],
       city: [],
       remark: [],
+      _form: [],
+    },
+  }
+}
+
+export function createEmptyMarriedUserFormState(): MarriedUserFormState {
+  return {
+    errors: {
+      roleId: [],
+      identifier: [],
+      password: [],
       _form: [],
     },
   }

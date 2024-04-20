@@ -53,6 +53,13 @@ const paths = {
     isSubMenu: true,
     roleCategories: [RoleCategories.Married],
   },
+  users: {
+    url: '/married/user',
+    isAuthenticated: true,
+    text: 'Utilisateurs',
+    isSubMenu: true,
+    roleCategories: [RoleCategories.Married],
+  },
 }
 
 export default paths

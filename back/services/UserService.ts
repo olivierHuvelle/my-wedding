@@ -31,6 +31,9 @@ export class UserService {
       include: {
         guests: true,
       },
+      orderBy: {
+        id: 'asc',
+      },
     })
   }
 
@@ -58,11 +61,42 @@ export class UserService {
     }
   }
 
-  async update(id: number, data: Prisma.UserUpdateInput) {
+  async update(id: number, data: Prisma.UserUncheckedUpdateInput) {
+    if (data.roleId) {
+      const role = await this._prisma.role.findFirst({
+        where: {
+          id: data.roleId as number,
+        },
+      })
+      if (!role) {
+        throw new Error("Impossible de trouver le role de l'utilisateur")
+      }
+    }
     data.password = hashSync(data.password as string, 10)
     return await this._prisma.user.update({
       where: { id },
       data,
+    })
+  }
+
+  async create(data: Prisma.UserUncheckedCreateInput) {
+    const role = await this._prisma.role.findFirst({
+      where: {
+        id: data.roleId,
+      },
+    })
+    if (!role) {
+      throw new Error("Impossible de trouver le role de l'utilisateur")
+    }
+    data.password = hashSync(data.password as string, 10)
+    return await this._prisma.user.create({
+      data,
+    })
+  }
+
+  async delete(id: number) {
+    return await this._prisma.user.delete({
+      where: { id },
     })
   }
 }

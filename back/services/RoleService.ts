@@ -15,4 +15,8 @@ export class RoleService {
     }
     return rootParent
   }
+
+  async findAll() {
+    return await this._prisma.role.findMany({})
+  }
 }
