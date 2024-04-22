@@ -88,3 +88,40 @@ export async function deleteEvent(event: Event): Promise<BaseFormState> {
     }
   }
 }
+
+export async function createEvent(formData: unknown): Promise<EventFormState> {
+  const res = createEmptyEventFormState()
+  try {
+    const result = EventCreateInput.safeParse(formData)
+    if (!result.success) {
+      return {
+        errors: {
+          ...res.errors,
+          ...result.error.flatten().fieldErrors,
+        },
+      }
+    }
+    if (result.data.startingAt > result.data.endingAt) {
+      return {
+        errors: {
+          ...res.errors,
+          _form: ['le début doit être antérieur à la fin'],
+        },
+      }
+    }
+    result.data.startingAt = new Date(result.data.startingAt.getTime() + 2 * 60 * 60 * 1000)
+    result.data.endingAt = new Date(result.data.endingAt.getTime() + 2 * 60 * 60 * 1000)
+    const eventService = new EventService()
+    await eventService.create(result.data)
+    revalidatePath('/')
+    return res
+  } catch (err) {
+    if (err instanceof UnauthenticatedError || err instanceof PermissionDenied || err instanceof Error) {
+      res.errors._form.push(err.message)
+      return res
+    } else {
+      res.errors._form.push("Erreur lors de la création de l'événement, veuillez réessayer plus tard")
+      return res
+    }
+  }
+}

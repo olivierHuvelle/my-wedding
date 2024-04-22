@@ -99,6 +99,7 @@ export default function EventForm({ event }: EventFormProps) {
         placeholder="Exemple"
         isRequired={true}
         value={name.value}
+        onBlur={name.blurHandler}
         onInput={name.inputHandler}
         isInvalid={name.hasError}
         errorMessage={name.errors}
@@ -109,6 +110,7 @@ export default function EventForm({ event }: EventFormProps) {
         placeholder="Arlon"
         isRequired={true}
         value={city.value}
+        onBlur={city.blurHandler}
         onInput={city.inputHandler}
         isInvalid={city.hasError}
         errorMessage={city.errors}
@@ -129,6 +131,7 @@ export default function EventForm({ event }: EventFormProps) {
         placeholder="1"
         isRequired={true}
         value={street.value}
+        onBlur={street.blurHandler}
         onInput={street.inputHandler}
         isInvalid={street.hasError}
         errorMessage={street.errors}
@@ -139,6 +142,7 @@ export default function EventForm({ event }: EventFormProps) {
         placeholder="6740"
         isRequired={true}
         value={zipCode.value}
+        onBlur={zipCode.blurHandler}
         onInput={zipCode.inputHandler}
         isInvalid={zipCode.hasError}
         errorMessage={zipCode.errors}
@@ -152,6 +156,7 @@ export default function EventForm({ event }: EventFormProps) {
           label: '-mt-4',
         }}
         value={startingAt.value}
+        onBlur={startingAt.blurHandler}
         onInput={startingAt.inputHandler}
         isInvalid={startingAt.hasError}
         errorMessage={startingAt.errors}
@@ -165,6 +170,7 @@ export default function EventForm({ event }: EventFormProps) {
           label: '-mt-4',
         }}
         value={endingAt.value}
+        onBlur={endingAt.blurHandler}
         onInput={endingAt.inputHandler}
         isInvalid={endingAt.hasError}
         errorMessage={endingAt.errors}

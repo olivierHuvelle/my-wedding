@@ -46,4 +46,10 @@ export class EventService {
       where: { id },
     })
   }
+
+  async create(data: Prisma.EventUncheckedCreateInput) {
+    return await this._prisma.event.create({
+      data,
+    })
+  }
 }
