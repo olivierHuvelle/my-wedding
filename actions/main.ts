@@ -24,12 +24,8 @@ export interface GuestFormState extends BaseFormState {
     isChild: string[]
     foodProhibitions: string[]
     menu: string[]
-    zipCode: string[]
-    number: string[]
     phone: string[]
-    city: string[]
     remark: string[]
-    street: string[]
     age: string[]
     _form: string[]
   }
@@ -59,10 +55,6 @@ export interface ContactFormState extends BaseFormState {
     job: string[]
     firstName: string[]
     lastName: string[]
-    zipCode: string[]
-    number: string[]
-    street: string[]
-    city: string[]
     remark: string[]
     _form: string[]
   }
@@ -99,12 +91,8 @@ export function createEmptyGuestFormState(): GuestFormState {
       isChild: [],
       foodProhibitions: [],
       menu: [],
-      zipCode: [],
-      number: [],
       phone: [],
-      city: [],
       remark: [],
-      street: [],
       age: [],
       _form: [],
     },
@@ -129,10 +117,6 @@ export function createEmptyContactFormState(): ContactFormState {
       job: [],
       firstName: [],
       lastName: [],
-      zipCode: [],
-      number: [],
-      street: [],
-      city: [],
       remark: [],
       _form: [],
     },

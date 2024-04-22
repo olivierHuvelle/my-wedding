@@ -39,18 +39,14 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
   const phone = useInput(ContactCreateInput.pick({ phone: true }), 'phone', contact?.phone ?? '')
   const email = useInput(ContactCreateInput.pick({ email: true }), 'email', contact?.email ?? '')
   const job = useInput(ContactCreateInput.pick({ job: true }), 'job', contact?.job ?? '')
-  const zipCode = useInput(ContactCreateInput.pick({ zipCode: true }), 'zipCode', contact?.zipCode ?? '')
-  const number = useInput(ContactCreateInput.pick({ number: true }), 'number', contact?.number ?? '')
-  const street = useInput(ContactCreateInput.pick({ street: true }), 'street', contact?.street ?? '')
-  const city = useInput(ContactCreateInput.pick({ city: true }), 'city', contact?.city ?? '')
   const remark = useInput(ContactCreateInput.pick({ remark: true }), 'remark', contact?.remark ?? '')
   const [selectedEvents, setSelectedEvents] = useState(
     new Set(contactWithEvents?.events.map((eventId) => `${eventId}`)),
   )
 
   const inputs = useMemo(
-    () => [firstName, lastName, phone, email, job, zipCode, number, street, city, remark],
-    [firstName, lastName, phone, email, job, zipCode, number, street, city, remark],
+    () => [firstName, lastName, phone, email, job, remark],
+    [firstName, lastName, phone, email, job, remark],
   )
 
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError) || selectedEvents.size === 0
@@ -136,7 +132,7 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {`${contactWithEvents ? 'Modifier' : 'Ajouter'}`} un invité
+              {`${contactWithEvents ? 'Modifier' : 'Ajouter'}`} un contact
             </ModalHeader>
             <ModalBody>
               <form action={submitHandler} ref={formRef}>
@@ -206,50 +202,6 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
                   isInvalid={job.hasError}
                   errorMessage={job.errors}
                   onBlur={job.blurHandler}
-                />
-                <Input
-                  name="city"
-                  label="Ville"
-                  placeholder="Arlon"
-                  isRequired={true}
-                  value={city.value}
-                  onInput={city.inputHandler}
-                  isInvalid={city.hasError}
-                  errorMessage={city.errors}
-                  onBlur={city.blurHandler}
-                />
-                <Input
-                  name="number"
-                  label="Numéro"
-                  placeholder="1"
-                  isRequired={true}
-                  value={number.value}
-                  onInput={number.inputHandler}
-                  isInvalid={number.hasError}
-                  errorMessage={number.errors}
-                  onBlur={number.blurHandler}
-                />
-                <Input
-                  name="street"
-                  label="Rue"
-                  placeholder="1"
-                  isRequired={true}
-                  value={street.value}
-                  onInput={street.inputHandler}
-                  isInvalid={street.hasError}
-                  errorMessage={street.errors}
-                  onBlur={street.blurHandler}
-                />
-                <Input
-                  name="zipCode"
-                  label="Code postal"
-                  placeholder="6740"
-                  isRequired={true}
-                  value={zipCode.value}
-                  onInput={zipCode.inputHandler}
-                  isInvalid={zipCode.hasError}
-                  errorMessage={zipCode.errors}
-                  onBlur={zipCode.blurHandler}
                 />
                 <Textarea
                   name="remark"

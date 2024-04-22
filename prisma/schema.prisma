@@ -66,12 +66,8 @@ model Contact {
   phone     String?
   email     String?        @unique
   job       String?
-  firstName String?
-  lastName  String?
-  zipCode   String
-  number    String
-  street    String
-  city      String
+  firstName String
+  lastName  String
   remark    String?
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt

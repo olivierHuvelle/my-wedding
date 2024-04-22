@@ -6,10 +6,6 @@ interface Contact {
   email: string
   firstName: string
   lastName: string
-  zipCode: string
-  number: string
-  street: string
-  city: string
   remark: string
 }
 
@@ -39,10 +35,6 @@ export class ContactFactory extends BaseFactory<Contact> {
       email,
       firstName,
       lastName,
-      zipCode: fakerFR_BE.location.zipCode(),
-      number: fakerFR_BE.location.buildingNumber(),
-      street: fakerFR_BE.location.street(),
-      city: fakerFR_BE.location.city(),
       remark: fakerFR_BE.lorem.text(),
     }
   }
