@@ -7,7 +7,7 @@ export default async function ProfilePage() {
   const user = await getUser(session?.user.id as number)
 
   return (
-    <section className="my-4">
+    <section className="my-4 w-full md:w-auto">
       <h2 className="mb-2 text-2xl">Profil</h2>
       <div className="mb-4 w-full rounded bg-white px-8 pb-8 pt-6 shadow-md md:w-96">
         <ProfileForm user={user} />
