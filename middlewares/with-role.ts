@@ -23,7 +23,7 @@ export default function withRoleMiddleware(middleware: CustomMiddleware) {
         const pathName = path.url
 
         if (
-          request.nextUrl.pathname === pathName &&
+          request.nextUrl.pathname.startsWith(pathName) &&
           path.roleCategories.length &&
           !path.roleCategories.includes(tokenRoleCategory)
         ) {
