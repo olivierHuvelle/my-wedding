@@ -10,12 +10,8 @@ interface GuestFactoryObject {
   isChild: boolean
   foodProhibitions: string
   menu: Menu
-  zipCode: string
-  number: string
   phone: string | undefined | null
-  city: string
   remark: string
-  street: string
   age?: number | undefined
 }
 
@@ -34,10 +30,6 @@ export class GuestFactory {
       isChild: false,
       menu: Menu.Adult,
       foodProhibitions: this._getCommonFoodProhibitions(),
-      zipCode: fakerFR_BE.location.zipCode(),
-      number: fakerFR_BE.location.buildingNumber(),
-      city: fakerFR_BE.location.city(),
-      street: fakerFR_BE.location.street(),
       phone: fakerFR_BE.phone.number(),
       remark: `remark for user ${userId}`,
     }
@@ -51,10 +43,6 @@ export class GuestFactory {
       isChild: false,
       menu: Menu.Adult,
       foodProhibitions: this._getCommonFoodProhibitions(),
-      zipCode: guest.zipCode,
-      number: guest.number,
-      city: guest.city,
-      street: guest.street,
       phone: guest.phone,
       remark: '',
     }
@@ -68,10 +56,6 @@ export class GuestFactory {
       isChild: true,
       menu: Menu.None,
       foodProhibitions: '',
-      zipCode: guest.zipCode,
-      number: guest.number,
-      city: guest.city,
-      street: guest.street,
       phone: guest.phone,
       remark: '',
       age: 1,
@@ -86,10 +70,6 @@ export class GuestFactory {
       isChild: true,
       menu: Menu.Child,
       foodProhibitions: '',
-      zipCode: guest.zipCode,
-      number: guest.number,
-      city: guest.city,
-      street: guest.street,
       phone: guest.phone,
       remark: '',
       age: 8,
@@ -104,10 +84,6 @@ export class GuestFactory {
       isChild: false,
       menu: Menu.Adult,
       foodProhibitions: '',
-      zipCode: '6740',
-      number: '2',
-      city: 'Villers-sur-Semois',
-      street: 'Joseph Weicker',
       phone: '0494910885',
       remark: '',
     }
@@ -121,10 +97,6 @@ export class GuestFactory {
       isChild: false,
       menu: Menu.Adult,
       foodProhibitions: 'Crevettes',
-      zipCode: '6740',
-      number: '2',
-      city: 'Villers-sur-Semois',
-      street: 'Joseph Weicker',
       phone: '0494244797',
       remark: '',
     }

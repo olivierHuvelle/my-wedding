@@ -47,16 +47,12 @@ model Guest {
   id               Int      @id @default(autoincrement())
   userId           Int
   firstName        String
-  lastName         String?
+  lastName         String
   isChild          Boolean
   age              Int?
   foodProhibitions String?
   menu             Menu
   remark           String?
-  zipCode          String
-  number           String
-  street           String
-  city             String
   phone            String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

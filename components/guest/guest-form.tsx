@@ -46,10 +46,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   )
   const remark = useInput(GuestCreateInput.pick({ remark: true }), 'remark', guest?.remark ?? '')
   const phone = useInput(GuestCreateInput.pick({ phone: true }), 'phone', guest?.phone ?? '')
-  const city = useInput(GuestCreateInput.pick({ city: true }), 'city', guest?.city ?? '')
-  const number = useInput(GuestCreateInput.pick({ number: true }), 'number', guest?.number ?? '')
-  const street = useInput(GuestCreateInput.pick({ street: true }), 'street', guest?.street ?? '')
-  const zipCode = useInput(GuestCreateInput.pick({ zipCode: true }), 'zipCode', guest?.zipCode ?? '')
   const [menuValue, setMenuValue] = useState<Menu>(guest?.menu ? guest.menu : Menu.Adult)
   const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest?.age ? `${guest?.age}` : '', (value) =>
     parseInt(value),
@@ -58,8 +54,8 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   const [selectedEvents, setSelectedEvents] = useState(new Set(guest?.events.map((event) => `${event.eventId}`)))
 
   const inputs = useMemo(
-    () => [firstName, lastName, foodProhibitions, remark, phone, city, number, street, zipCode, age],
-    [firstName, lastName, foodProhibitions, remark, phone, city, number, street, zipCode, age],
+    () => [firstName, lastName, foodProhibitions, remark, phone, age],
+    [firstName, lastName, foodProhibitions, remark, phone, age],
   )
 
   const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
@@ -102,10 +98,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       foodProhibitions: formData.get('foodProhibitions'),
       remark: formData.get('remark'),
       phone: formData.get('phone'),
-      city: formData.get('city'),
-      number: formData.get('number'),
-      street: formData.get('street'),
-      zipCode: formData.get('zipCode'),
       age: formData.get('age') ? Number(formData.get('age')) : formData.get('age'),
       isChild,
       menu: menuValue,
@@ -215,50 +207,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                   isInvalid={phone.hasError}
                   errorMessage={phone.errors}
                   onBlur={phone.blurHandler}
-                />
-                <Input
-                  name="city"
-                  label="Ville"
-                  placeholder="Arlon"
-                  isRequired={true}
-                  value={city.value}
-                  onInput={city.inputHandler}
-                  isInvalid={city.hasError}
-                  errorMessage={city.errors}
-                  onBlur={city.blurHandler}
-                />
-                <Input
-                  name="number"
-                  label="Numéro"
-                  placeholder="1"
-                  isRequired={true}
-                  value={number.value}
-                  onInput={number.inputHandler}
-                  isInvalid={number.hasError}
-                  errorMessage={number.errors}
-                  onBlur={number.blurHandler}
-                />
-                <Input
-                  name="street"
-                  label="Rue"
-                  placeholder="1"
-                  isRequired={true}
-                  value={street.value}
-                  onInput={street.inputHandler}
-                  isInvalid={street.hasError}
-                  errorMessage={street.errors}
-                  onBlur={street.blurHandler}
-                />
-                <Input
-                  name="zipCode"
-                  label="Code postal"
-                  placeholder="6740"
-                  isRequired={true}
-                  value={zipCode.value}
-                  onInput={zipCode.inputHandler}
-                  isInvalid={zipCode.hasError}
-                  errorMessage={zipCode.errors}
-                  onBlur={zipCode.blurHandler}
                 />
                 <Textarea
                   name="remark"
