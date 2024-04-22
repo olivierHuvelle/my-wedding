@@ -35,7 +35,7 @@ const paths = {
   profile: {
     url: '/profile',
     isAuthenticated: true,
-    text: 'Profile',
+    text: 'Profil',
     isSubMenu: false,
     roleCategories: [RoleCategories.Married, RoleCategories.Guest],
   },
