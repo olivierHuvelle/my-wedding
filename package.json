@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "vercel-build": "npx dotenv -e ./.env prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -37,7 +38,6 @@
     "framer-motion": "^11.0.25",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
-    "lodash": "^4.17.21",
     "next": "14.1.4",
     "next-auth": "^4.24.7",
     "prettier": "^3.2.5",
