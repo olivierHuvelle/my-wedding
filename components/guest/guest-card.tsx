@@ -69,7 +69,7 @@ export default function GuestCard({ guest, events }: GuestCardProps) {
       />
       <DeleteModal
         title="Supprimer un invité"
-        confirmationText={`Etes-vous certain de vouloir supprimer l'invité ${guest.firstName} ${guest.lastName ?? ''}`}
+        confirmationText={`Etes-vous certain de vouloir supprimer l'invité ${guest.firstName} ${guest.lastName ?? ''} ?`}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteOpenChange}
         deleteFn={deleteGuest}

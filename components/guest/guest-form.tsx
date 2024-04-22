@@ -46,7 +46,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   )
   const remark = useInput(GuestCreateInput.pick({ remark: true }), 'remark', guest?.remark ?? '')
   const phone = useInput(GuestCreateInput.pick({ phone: true }), 'phone', guest?.phone ?? '')
-  const [menuValue, setMenuValue] = useState<Menu>(guest?.menu ? guest.menu : Menu.Adult)
+  const [menuValue, setMenuValue] = useState<Menu>(guest?.menu ? guest.menu : Menu.Adulte)
   const age = useInput(GuestCreateInput.pick({ age: true }), 'age', guest?.age ? `${guest?.age}` : '', (value) =>
     parseInt(value),
   )
@@ -63,10 +63,10 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   const isChildOnchangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setIsChild(e.target.checked)
     if (e.target.checked) {
-      setMenuValue(Menu.Child)
+      setMenuValue(Menu.Enfant)
     } else {
       age.setEnteredValue('')
-      setMenuValue(Menu.Adult)
+      setMenuValue(Menu.Adulte)
     }
   }
 
@@ -80,7 +80,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
 
   const onCloseHandler = () => {
     inputs.forEach((input) => input.reset())
-    setMenuValue(guest?.menu ? guest.menu : Menu.Adult)
+    setMenuValue(guest?.menu ? guest.menu : Menu.Adulte)
     setIsChild(guest?.isChild ? guest.isChild : false)
     setSelectedEvents(new Set(guest?.events.map((event) => `${event.eventId}`)))
     onClose()
@@ -159,10 +159,42 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
             <ModalHeader className="flex flex-col gap-1">{`${guest ? 'Modifier' : 'Ajouter'}`} un invité</ModalHeader>
             <ModalBody>
               <form action={submitHandler} ref={formRef}>
+                <Checkbox isSelected={isChild} onChange={isChildOnchangeHandler} className="my-2" name="isChild">
+                  S&apos;agit-il d&apos;un enfant ?
+                </Checkbox>
+                {isChild && (
+                  <>
+                    <Input
+                      name="age"
+                      type="number"
+                      label="Age"
+                      value={age.value}
+                      onInput={age.inputHandler}
+                      isInvalid={age.hasError}
+                      errorMessage={age.errors}
+                      onBlur={age.blurHandler}
+                    />
+
+                    <Select
+                      name="menu"
+                      label="Menu"
+                      value={guest?.menu}
+                      isRequired={true}
+                      selectedKeys={[menuValue]}
+                      onChange={menuChangeHandler}
+                      className="mb-2"
+                    >
+                      {Object.values(Menu).map((menuOptionValue) => (
+                        <SelectItem key={menuOptionValue} value={menuOptionValue}>
+                          {menuOptionValue}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </>
+                )}
                 <Input
                   name="firstName"
                   label="Prénom"
-                  placeholder="John"
                   isRequired={true}
                   value={firstName.value}
                   onInput={firstName.inputHandler}
@@ -173,7 +205,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                 <Input
                   name="lastName"
                   label="Nom"
-                  placeholder="Doe"
+                  isRequired={true}
                   value={lastName.value}
                   onInput={lastName.inputHandler}
                   isInvalid={lastName.hasError}
@@ -200,8 +232,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
 
                 <Input
                   name="phone"
-                  label="Telephone"
-                  placeholder="123456789"
+                  label="Téléphone (facultatif)"
                   value={phone.value}
                   onInput={phone.inputHandler}
                   isInvalid={phone.hasError}
@@ -211,7 +242,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                 <Textarea
                   name="remark"
                   label="Remarques"
-                  placeholder="Tout ce vous semble pertinent !"
+                  placeholder="Tout ce qui vous semble pertinent !"
                   value={remark.value}
                   onInput={remark.inputHandler}
                   isInvalid={remark.hasError}
@@ -221,46 +252,13 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                 <Textarea
                   name="foodProhibitions"
                   label="Interdits alimentaires"
-                  placeholder="Ex Allergie aux arachides, kasher, arachides kasher"
+                  placeholder="Ex Allergie aux arachides, kasher, arachides kasher 😱"
                   value={foodProhibitions.value}
                   onInput={foodProhibitions.inputHandler}
                   isInvalid={foodProhibitions.hasError}
                   errorMessage={foodProhibitions.errors}
                   onBlur={foodProhibitions.blurHandler}
                 />
-                <Checkbox isSelected={isChild} onChange={isChildOnchangeHandler} className="my-2" name="isChild">
-                  Enfant ?
-                </Checkbox>
-                {isChild && (
-                  <>
-                    <Input
-                      name="age"
-                      type="number"
-                      label="Age"
-                      placeholder="2"
-                      value={age.value}
-                      onInput={age.inputHandler}
-                      isInvalid={age.hasError}
-                      errorMessage={age.errors}
-                      onBlur={age.blurHandler}
-                    />
-
-                    <Select
-                      name="menu"
-                      label="Menu"
-                      value={guest?.menu}
-                      isRequired={true}
-                      selectedKeys={[menuValue]}
-                      onChange={menuChangeHandler}
-                    >
-                      {Object.values(Menu).map((menuOptionValue) => (
-                        <SelectItem key={menuOptionValue} value={menuOptionValue}>
-                          {menuOptionValue}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </>
-                )}
                 {!!formErrors.length && (
                   <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
                 )}

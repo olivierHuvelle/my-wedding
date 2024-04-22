@@ -14,9 +14,9 @@ datasource db {
 }
 
 enum Menu {
-  Adult
-  Child
-  None
+  Adulte
+  Enfant
+  Aucun
 }
 
 model Role {

@@ -10,9 +10,10 @@ import { ReactNode } from 'react'
 interface EventCardProps {
   event: Event
   children?: ReactNode
+  isLastEvent: boolean
 }
 
-export default function EventCard({ event, children }: EventCardProps) {
+export default function EventCard({ event, children, isLastEvent }: EventCardProps) {
   return (
     <>
       <Card className="my-2 cursor-pointer">
@@ -55,11 +56,13 @@ export default function EventCard({ event, children }: EventCardProps) {
                 timeZone: 'UTC',
               })}
               -
-              {event.endingAt.toLocaleTimeString('fr-FR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: 'UTC',
-              })}
+              {!isLastEvent
+                ? event.endingAt.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC',
+                  })
+                : ''}
             </p>
           </div>
         </CardFooter>

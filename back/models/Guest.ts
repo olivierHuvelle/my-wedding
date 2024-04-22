@@ -20,8 +20,13 @@ export const GuestCreateInput = z.object({
     .max(255, { message: 'Les interdits alimentaires doivent contenir au plus 255 caractères' })
     .nullable()
     .optional(),
-  menu: z.enum([Menu.Adult, Menu.Child, Menu.None]),
+  menu: z.enum([Menu.Adulte, Menu.Enfant, Menu.Aucun]),
   remark: z.string().trim().max(255, { message: 'La remarque doit contenir au plus 255 caractères' }).optional(),
   phone: z.string().nullable().optional(),
-  age: z.number().int().min(1, { message: "L'âge doit être un entier strictement positif" }).nullable().optional(),
+  age: z
+    .number({ invalid_type_error: "L'âge doit être un entier strictement positif" })
+    .int({ message: "L'âge doit être un entier strictement positif" })
+    .min(1, { message: "L'âge doit être un entier strictement positif" })
+    .nullable()
+    .optional(),
 }) satisfies z.Schema<Prisma.GuestUncheckedCreateInput>
