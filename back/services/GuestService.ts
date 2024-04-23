@@ -131,6 +131,17 @@ export class GuestService {
           throw new Error(`Certains événements avec les IDs [${missingEventIds.join(', ')}] n'existent pas.`)
         }
 
+        const existingGuest = await prisma.guest.findFirst({
+          where: {
+            userId,
+            firstName: data.firstName,
+            lastName: data.lastName,
+          },
+        })
+        if (existingGuest) {
+          return existingGuest
+        }
+
         const createdGuest = await prisma.guest.create({
           data: {
             ...data,
