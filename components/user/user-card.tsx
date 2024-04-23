@@ -59,7 +59,7 @@ export default function UserCard({ user, roles }: UserCardProps) {
       />
       <DeleteModal
         title="Supprimer un utilisateur"
-        confirmationText={`Etes-vous certain de vouloir supprimer l'utilisateur ${user.identifier}`}
+        confirmationText={`Etes-vous certain de vouloir supprimer l'utilisateur ${user.identifier} ?`}
         isOpen={isDeleteModalOpen}
         onOpenChange={onDeleteOpenChange}
         deleteFn={deleteUser}

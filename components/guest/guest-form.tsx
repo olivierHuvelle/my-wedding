@@ -14,6 +14,7 @@ import {
   Select,
   SelectItem,
   Checkbox,
+  Spinner,
 } from '@nextui-org/react'
 import { Event, EventGuest, Guest, Menu } from '@prisma/client'
 import { GuestCreateInput } from '@/back/models/Guest'
@@ -37,6 +38,7 @@ interface GuestFormProps {
 export default function GuestForm({ isOpen, onOpenChange, userId, guest, events, onClose }: GuestFormProps) {
   const formRef = useRef<HTMLFormElement>(null)
   const [formErrors, setFormErrors] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const firstName = useInput(GuestCreateInput.pick({ firstName: true }), 'firstName', guest?.firstName ?? '')
   const lastName = useInput(GuestCreateInput.pick({ lastName: true }), 'lastName', guest?.lastName ?? '')
   const foodProhibitions = useInput(
@@ -58,7 +60,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     [firstName, lastName, foodProhibitions, remark, phone, age],
   )
 
-  const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
+  const isConfirmButtonDisabled = inputs.some((input) => input.hasError) || isLoading
 
   const isChildOnchangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setIsChild(e.target.checked)
@@ -92,6 +94,10 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   }
 
   const submitHandler = async (formData: FormData) => {
+    if (isLoading) {
+      return
+    }
+
     const data = {
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
@@ -118,11 +124,11 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       }
       return
     }
-
+    setIsLoading(true)
     const response = guest
       ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
       : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
-
+    setIsLoading(false)
     let hasResponseError = false
     const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
     for (const key of keys) {
@@ -158,111 +164,114 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
           <>
             <ModalHeader className="flex flex-col gap-1">{`${guest ? 'Modifier' : 'Ajouter'}`} un invité</ModalHeader>
             <ModalBody>
-              <form action={submitHandler} ref={formRef}>
-                <Checkbox isSelected={isChild} onChange={isChildOnchangeHandler} className="my-2" name="isChild">
-                  S&apos;agit-il d&apos;un enfant ?
-                </Checkbox>
-                {isChild && (
-                  <>
-                    <Input
-                      name="age"
-                      type="number"
-                      label="Age"
-                      value={age.value}
-                      onInput={age.inputHandler}
-                      isInvalid={age.hasError}
-                      errorMessage={age.errors}
-                      onBlur={age.blurHandler}
-                    />
+              {!isLoading && (
+                <form action={submitHandler} ref={formRef}>
+                  <Checkbox isSelected={isChild} onChange={isChildOnchangeHandler} className="my-2" name="isChild">
+                    S&apos;agit-il d&apos;un enfant ?
+                  </Checkbox>
+                  {isChild && (
+                    <>
+                      <Input
+                        name="age"
+                        type="number"
+                        label="Age"
+                        value={age.value}
+                        onInput={age.inputHandler}
+                        isInvalid={age.hasError}
+                        errorMessage={age.errors}
+                        onBlur={age.blurHandler}
+                      />
 
-                    <Select
-                      name="menu"
-                      label="Menu"
-                      value={guest?.menu}
-                      isRequired={true}
-                      selectedKeys={[menuValue]}
-                      onChange={menuChangeHandler}
-                      className="mb-2"
-                    >
-                      {Object.values(Menu).map((menuOptionValue) => (
-                        <SelectItem key={menuOptionValue} value={menuOptionValue}>
-                          {menuOptionValue}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </>
-                )}
-                <Input
-                  name="firstName"
-                  label="Prénom"
-                  isRequired={true}
-                  value={firstName.value}
-                  onInput={firstName.inputHandler}
-                  isInvalid={firstName.hasError}
-                  errorMessage={firstName.errors}
-                  onBlur={firstName.blurHandler}
-                />
-                <Input
-                  name="lastName"
-                  label="Nom"
-                  isRequired={true}
-                  value={lastName.value}
-                  onInput={lastName.inputHandler}
-                  isInvalid={lastName.hasError}
-                  errorMessage={lastName.errors}
-                  onBlur={lastName.blurHandler}
-                />
+                      <Select
+                        name="menu"
+                        label="Menu"
+                        value={guest?.menu}
+                        isRequired={true}
+                        selectedKeys={[menuValue]}
+                        onChange={menuChangeHandler}
+                        className="mb-2"
+                      >
+                        {Object.values(Menu).map((menuOptionValue) => (
+                          <SelectItem key={menuOptionValue} value={menuOptionValue}>
+                            {menuOptionValue}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    </>
+                  )}
+                  <Input
+                    name="firstName"
+                    label="Prénom"
+                    isRequired={true}
+                    value={firstName.value}
+                    onInput={firstName.inputHandler}
+                    isInvalid={firstName.hasError}
+                    errorMessage={firstName.errors}
+                    onBlur={firstName.blurHandler}
+                  />
+                  <Input
+                    name="lastName"
+                    label="Nom"
+                    isRequired={true}
+                    value={lastName.value}
+                    onInput={lastName.inputHandler}
+                    isInvalid={lastName.hasError}
+                    errorMessage={lastName.errors}
+                    onBlur={lastName.blurHandler}
+                  />
 
-                <Select
-                  name="events"
-                  label="Événements"
-                  isRequired={true}
-                  selectionMode="multiple"
-                  placeholder="Sélectionnez un ou plusieurs événements"
-                  className="mb-2"
-                  selectedKeys={selectedEvents}
-                  onChange={eventChangeHandler}
-                >
-                  {events.map((event) => (
-                    <SelectItem key={event.id} value={event.id}>
-                      {event.name}
-                    </SelectItem>
-                  ))}
-                </Select>
+                  <Select
+                    name="events"
+                    label="Événements"
+                    isRequired={true}
+                    selectionMode="multiple"
+                    placeholder="Sélectionnez un ou plusieurs événements"
+                    className="mb-2"
+                    selectedKeys={selectedEvents}
+                    onChange={eventChangeHandler}
+                  >
+                    {events.map((event) => (
+                      <SelectItem key={event.id} value={event.id}>
+                        {event.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
 
-                <Input
-                  name="phone"
-                  label="Téléphone (facultatif)"
-                  value={phone.value}
-                  onInput={phone.inputHandler}
-                  isInvalid={phone.hasError}
-                  errorMessage={phone.errors}
-                  onBlur={phone.blurHandler}
-                />
-                <Textarea
-                  name="remark"
-                  label="Remarques"
-                  placeholder="Tout ce qui vous semble pertinent !"
-                  value={remark.value}
-                  onInput={remark.inputHandler}
-                  isInvalid={remark.hasError}
-                  errorMessage={remark.errors}
-                  onBlur={remark.blurHandler}
-                />
-                <Textarea
-                  name="foodProhibitions"
-                  label="Interdits alimentaires"
-                  placeholder="Ex Allergie aux arachides, kasher, arachides kasher 😱"
-                  value={foodProhibitions.value}
-                  onInput={foodProhibitions.inputHandler}
-                  isInvalid={foodProhibitions.hasError}
-                  errorMessage={foodProhibitions.errors}
-                  onBlur={foodProhibitions.blurHandler}
-                />
-                {!!formErrors.length && (
-                  <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
-                )}
-              </form>
+                  <Input
+                    name="phone"
+                    label="Téléphone (facultatif)"
+                    value={phone.value}
+                    onInput={phone.inputHandler}
+                    isInvalid={phone.hasError}
+                    errorMessage={phone.errors}
+                    onBlur={phone.blurHandler}
+                  />
+                  <Textarea
+                    name="remark"
+                    label="Remarques"
+                    placeholder="Tout ce qui vous semble pertinent !"
+                    value={remark.value}
+                    onInput={remark.inputHandler}
+                    isInvalid={remark.hasError}
+                    errorMessage={remark.errors}
+                    onBlur={remark.blurHandler}
+                  />
+                  <Textarea
+                    name="foodProhibitions"
+                    label="Interdits alimentaires"
+                    placeholder="Ex Allergie aux arachides, kasher, arachides kasher 😱"
+                    value={foodProhibitions.value}
+                    onInput={foodProhibitions.inputHandler}
+                    isInvalid={foodProhibitions.hasError}
+                    errorMessage={foodProhibitions.errors}
+                    onBlur={foodProhibitions.blurHandler}
+                  />
+                  {!!formErrors.length && (
+                    <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
+                  )}
+                </form>
+              )}
+              {isLoading && <Spinner />}
             </ModalBody>
 
             <ModalFooter>
