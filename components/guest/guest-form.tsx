@@ -91,6 +91,11 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
   const reset = () => {
     setFormErrors([])
     inputs.forEach((input) => input.setServerErrors([]))
+    if (!guest) {
+      inputs.forEach((input) => input.reset())
+      setIsChild(false)
+      setSelectedEvents(new Set([]))
+    }
   }
 
   const submitHandler = async (formData: FormData) => {
@@ -124,29 +129,35 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       }
       return
     }
-    setIsLoading(true)
-    const response = guest
-      ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
-      : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
-    setIsLoading(false)
-    let hasResponseError = false
-    const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
-    for (const key of keys) {
-      const input = inputs.find((input) => input.name === key)
-      if (input && response.errors[key].length) {
-        input.setServerErrors(response.errors[key])
+
+    try {
+      setIsLoading(true)
+      const response = guest
+        ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
+        : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
+      let hasResponseError = false
+      const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
+      for (const key of keys) {
+        const input = inputs.find((input) => input.name === key)
+        if (input && response.errors[key].length) {
+          input.setServerErrors(response.errors[key])
+          hasResponseError = true
+        }
+      }
+      if (response.errors._form.length) {
+        setFormErrors(response.errors._form)
         hasResponseError = true
       }
-    }
-    if (response.errors._form.length) {
-      setFormErrors(response.errors._form)
-      hasResponseError = true
-    }
 
-    if (!hasResponseError) {
-      reset()
-      toast.success(guest ? "L'invité a bien été mis à jour" : "L'invité a bien été créé")
-      onOpenChange()
+      if (!hasResponseError) {
+        reset()
+        toast.success(guest ? "L'invité a bien été mis à jour" : "L'invité a bien été créé")
+        onOpenChange()
+      }
+    } catch (err) {
+      setFormErrors([`${err}`])
+    } finally {
+      setIsLoading(false)
     }
   }
 
