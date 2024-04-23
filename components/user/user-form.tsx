@@ -169,7 +169,7 @@ export default function UserForm({ user, roles, isOpen, onOpenChange, onClose }:
                 onPress={() => {
                   formRef.current && formRef.current.requestSubmit()
                 }}
-                disabled={isConfirmButtonDisabled}
+                isDisabled={isConfirmButtonDisabled}
               >
                 Valider
               </Button>

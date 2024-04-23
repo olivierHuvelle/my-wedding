@@ -202,7 +202,7 @@ export default function EventModalForm({ isOpen, onOpenChange, onClose }: EventM
                 onPress={() => {
                   formRef.current && formRef.current.requestSubmit()
                 }}
-                disabled={isConfirmButtonDisabled}
+                isDisabled={isConfirmButtonDisabled}
               >
                 Valider
               </Button>

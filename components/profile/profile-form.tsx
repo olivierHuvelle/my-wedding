@@ -163,7 +163,7 @@ export default function ProfileForm({ user }: ProfileFormProps) {
         <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
       )}
 
-      <Button disabled={isConfirmButtonDisabled} type="submit" color="success" variant="flat" className="w-full">
+      <Button isDisabled={isConfirmButtonDisabled} type="submit" color="success" variant="flat" className="w-full">
         Changer le profil
       </Button>
     </form>

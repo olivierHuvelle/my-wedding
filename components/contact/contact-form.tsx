@@ -229,7 +229,7 @@ export default function ContactForm({ isOpen, onOpenChange, onClose, contactWith
                 onPress={() => {
                   formRef.current && formRef.current.requestSubmit()
                 }}
-                disabled={isConfirmButtonDisabled}
+                isDisabled={isConfirmButtonDisabled}
               >
                 Valider
               </Button>

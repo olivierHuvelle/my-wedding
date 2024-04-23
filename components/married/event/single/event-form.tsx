@@ -180,7 +180,7 @@ export default function EventForm({ event }: EventFormProps) {
       )}
 
       <div className="flex justify-end">
-        <Button disabled={isConfirmButtonDisabled} type="submit" variant="flat" color="warning">
+        <Button isDisabled={isConfirmButtonDisabled} type="submit" variant="flat" color="warning">
           Mettre à jour
         </Button>
       </div>

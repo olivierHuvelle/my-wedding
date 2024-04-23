@@ -103,7 +103,7 @@ export default function LoginForm() {
         <Alert title="Une erreur s'est produite" content={formErrors} variant="danger" className="my-2" />
       )}
 
-      <Button disabled={isConfirmButtonDisabled} type="submit" color="success" variant="flat" className="w-full">
+      <Button isDisabled={isConfirmButtonDisabled} type="submit" color="success" variant="flat" className="w-full">
         Se connecter
       </Button>
     </form>

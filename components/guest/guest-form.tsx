@@ -294,7 +294,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                 onPress={() => {
                   formRef.current && formRef.current.requestSubmit()
                 }}
-                disabled={isConfirmButtonDisabled}
+                isDisabled={isConfirmButtonDisabled}
               >
                 Valider
               </Button>
