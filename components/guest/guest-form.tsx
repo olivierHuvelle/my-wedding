@@ -156,6 +156,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       }
     } catch (err) {
       setFormErrors([`${err}`])
+      setIsLoading(false)
     } finally {
       setIsLoading(false)
     }
