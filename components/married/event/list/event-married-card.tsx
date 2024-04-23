@@ -9,12 +9,13 @@ import paths from '@/utils/paths'
 
 interface EventMarriedCardProps {
   event: Event
+  isLastEvent: boolean
 }
 
-export default function EventMarriedCard({ event }: EventMarriedCardProps) {
+export default function EventMarriedCard({ event, isLastEvent }: EventMarriedCardProps) {
   const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onOpenChange: onDeleteOpenChange } = useDisclosure()
   return (
-    <EventCard event={event}>
+    <EventCard event={event} isLastEvent={isLastEvent}>
       <>
         <Divider />
         <CardFooter className="flex flex-row justify-end">

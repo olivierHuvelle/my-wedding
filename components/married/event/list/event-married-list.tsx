@@ -7,8 +7,9 @@ export default async function EventMarriedList() {
   return (
     <section className="my-4">
       <EventTitle />
-      {events.map((event) => (
-        <EventMarriedCard event={event} key={event.id} />
+
+      {events.map((event, index) => (
+        <EventMarriedCard event={event} key={event.id} isLastEvent={index === events.length - 1} />
       ))}
     </section>
   )
