@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import Providers from '@/app/providers'
 import TheHeader from '@/components/layout/the-header'
@@ -12,6 +12,14 @@ export const metadata: Metadata = {
   description: 'My Wedding - Olivier et Laurie',
 }
 
+export const viewport: Viewport = {
+  initialScale: 1,
+  width: 'device-width',
+  maximumScale: 1,
+  userScalable: false,
+  minimumScale: 1,
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,9 +27,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-      </head>
       <body className={`${inter.className} bg-gray-100`}>
         <Providers>
           <TheHeader />
