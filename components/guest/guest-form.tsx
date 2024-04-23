@@ -102,6 +102,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     if (isLoading) {
       return
     }
+    setIsLoading(true)
 
     const data = {
       firstName: formData.get('firstName'),
@@ -131,7 +132,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     }
 
     try {
-      setIsLoading(true)
       const response = guest
         ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
         : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
@@ -156,9 +156,10 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       }
     } catch (err) {
       setFormErrors([`${err}`])
-      setIsLoading(false)
     } finally {
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
     }
   }
 
