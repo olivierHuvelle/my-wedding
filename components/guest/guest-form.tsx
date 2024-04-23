@@ -293,9 +293,11 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
                   <Button
                     color="primary"
                     onPress={() => {
-                      formRef.current && formRef.current.requestSubmit()
+                      if (!isLoading) {
+                        formRef.current && formRef.current.requestSubmit()
+                      }
                     }}
-                    disabled={isConfirmButtonDisabled}
+                    disabled={isConfirmButtonDisabled || isLoading}
                   >
                     Valider
                   </Button>
