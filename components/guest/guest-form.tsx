@@ -102,7 +102,6 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
     if (isLoading) {
       return
     }
-    setIsLoading(true)
 
     const data = {
       firstName: formData.get('firstName'),
@@ -131,10 +130,14 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
       return
     }
 
-    try {
-      const response = guest
-        ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
-        : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
+    setIsLoading(true)
+
+    const response = guest
+      ? await updateGuest(guest, result.data, Array.from(selectedEvents, Number))
+      : await createGuest(userId, result.data, Array.from(selectedEvents, Number))
+
+    setTimeout(() => {
+      setIsLoading(false)
       let hasResponseError = false
       const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
       for (const key of keys) {
@@ -154,13 +157,7 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
         toast.success(guest ? "L'invité a bien été mis à jour" : "L'invité a bien été créé")
         onOpenChange()
       }
-    } catch (err) {
-      setFormErrors([`${err}`])
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false)
-      }, 1000)
-    }
+    }, 1000)
   }
 
   return (
@@ -288,18 +285,22 @@ export default function GuestForm({ isOpen, onOpenChange, userId, guest, events,
             </ModalBody>
 
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
-                Fermer
-              </Button>
-              <Button
-                color="primary"
-                onPress={() => {
-                  formRef.current && formRef.current.requestSubmit()
-                }}
-                isDisabled={isConfirmButtonDisabled}
-              >
-                Valider
-              </Button>
+              {!isLoading && (
+                <>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Fermer
+                  </Button>
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      formRef.current && formRef.current.requestSubmit()
+                    }}
+                    disabled={isConfirmButtonDisabled}
+                  >
+                    Valider
+                  </Button>
+                </>
+              )}
             </ModalFooter>
           </>
         )}

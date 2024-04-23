@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Modal, ModalHeader, ModalFooter, ModalContent, ModalBody, Button } from '@nextui-org/react'
+import { Modal, ModalHeader, ModalFooter, ModalContent, ModalBody, Button, Spinner } from '@nextui-org/react'
 import Alert from '@/components/ui/alert'
 import { BaseFormState, createEmptyFormState } from '@/actions/main'
 
@@ -24,18 +24,23 @@ export default function DeleteModal<T>({
   modelInstance,
 }: DeleteModalFormProps<T>) {
   const [error, setError] = useState<BaseFormState>(createEmptyFormState())
+  const [isLoading, setIsLoading] = useState(false)
 
   const submitHandler = async () => {
+    setIsLoading(true)
     const response = await deleteFn(modelInstance)
-    if (response.errors._form.length) {
-      setError((prevError) => ({
-        ...prevError,
-        errors: { ...response.errors },
-      }))
-    } else {
-      setError(createEmptyFormState())
-      onOpenChange()
-    }
+    setTimeout(() => {
+      setIsLoading(false)
+      if (response.errors._form.length) {
+        setError((prevError) => ({
+          ...prevError,
+          errors: { ...response.errors },
+        }))
+      } else {
+        setError(createEmptyFormState())
+        onOpenChange()
+      }
+    }, 1000)
   }
 
   return (
@@ -45,23 +50,32 @@ export default function DeleteModal<T>({
           <>
             <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
             <ModalBody>
-              <p>{confirmationText}</p>
-              {!!error.errors._form.length && (
-                <Alert
-                  title="Une erreur s'est produite"
-                  content={error.errors._form}
-                  variant="danger"
-                  className="mb-2"
-                />
+              {!isLoading && (
+                <>
+                  <p>{confirmationText}</p>
+                  {!!error.errors._form.length && (
+                    <Alert
+                      title="Une erreur s'est produite"
+                      content={error.errors._form}
+                      variant="danger"
+                      className="mb-2"
+                    />
+                  )}
+                </>
               )}
+              {isLoading && <Spinner />}
             </ModalBody>
             <ModalFooter>
-              <Button color="primary" variant="light" onPress={onClose}>
-                Annuler
-              </Button>
-              <Button color="danger" onClick={submitHandler}>
-                Confirmer
-              </Button>
+              {!isLoading && (
+                <>
+                  <Button color="primary" variant="light" onPress={onClose}>
+                    Annuler
+                  </Button>
+                  <Button color="danger" onClick={submitHandler}>
+                    Confirmer
+                  </Button>
+                </>
+              )}
             </ModalFooter>
           </>
         )}

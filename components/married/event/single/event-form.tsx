@@ -15,6 +15,7 @@ interface EventFormProps {
 
 export default function EventForm({ event }: EventFormProps) {
   const [formErrors, setFormErrors] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const name = useInput(EventCreateInput.pick({ name: true }), 'name', event.name)
   const city = useInput(EventCreateInput.pick({ city: true }), 'city', event.city)
   const number = useInput(EventCreateInput.pick({ number: true }), 'number', event.number)
@@ -38,7 +39,7 @@ export default function EventForm({ event }: EventFormProps) {
     [name, city, number, street, zipCode, startingAt, endingAt],
   )
 
-  const isConfirmButtonDisabled = inputs.some((input) => input.hasError)
+  const isConfirmButtonDisabled = inputs.some((input) => input.hasError) || isLoading
 
   const reset = () => {
     setFormErrors([])
@@ -46,6 +47,10 @@ export default function EventForm({ event }: EventFormProps) {
   }
 
   const submitHandler = async (formData: FormData) => {
+    if (isLoading) {
+      return
+    }
+
     const data = {
       name: formData.get('name'),
       city: formData.get('city'),
@@ -69,26 +74,31 @@ export default function EventForm({ event }: EventFormProps) {
       return
     }
 
+    setIsLoading(true)
+
     const response = await updateEvent(event, result.data)
 
-    let hasResponseError = false
-    const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
-    for (const key of keys) {
-      const input = inputs.find((input) => input.name === key)
-      if (input && response.errors[key].length) {
-        input.setServerErrors(response.errors[key])
+    setTimeout(() => {
+      setIsLoading(false)
+      let hasResponseError = false
+      const keys = Object.keys(response.errors) as (keyof typeof response.errors)[]
+      for (const key of keys) {
+        const input = inputs.find((input) => input.name === key)
+        if (input && response.errors[key].length) {
+          input.setServerErrors(response.errors[key])
+          hasResponseError = true
+        }
+      }
+      if (response.errors._form.length) {
+        setFormErrors(response.errors._form)
         hasResponseError = true
       }
-    }
-    if (response.errors._form.length) {
-      setFormErrors(response.errors._form)
-      hasResponseError = true
-    }
 
-    if (!hasResponseError) {
-      reset()
-      toast.success("L'événement a bien été mis à jour")
-    }
+      if (!hasResponseError) {
+        reset()
+        toast.success("L'événement a bien été mis à jour")
+      }
+    }, 1000)
   }
 
   return (
